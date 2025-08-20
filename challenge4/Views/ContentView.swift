@@ -37,6 +37,7 @@ struct ContentView: View {
         } detail: {
             Text("Select an item")
         }
+        
     }
 
     private func addItem() {
@@ -57,5 +58,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: [LogObject.self, NeedObject.self, RabitFaceObject.self, FeelingObject.self, Item.self], inMemory: true)
 }

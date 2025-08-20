@@ -1,0 +1,110 @@
+//
+//  NeedCard.swift
+//  challenge4
+//
+//  Created by Muhammad Dwiva Arya Erlangga on 19/08/25.
+//
+
+import SwiftUI
+
+struct NeedCard: View {
+    let needs = ["Rest", "Sleep", "Eat", "Play", "Relax", "Exercise", "Connect"]
+    @Binding var selectedNeed: String?
+    @Binding var customNeed: String
+
+    var body: some View {
+        ZStack {
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("Needs")
+                        .font(.title)
+                        .foregroundColor(.white)
+                    Image(systemName: "list.bullet")
+                        .font(.title)
+                        .foregroundColor(.white)
+                }
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(needs, id: \.self) { need in
+                            Text(need)
+                                .font(.body)
+                                .foregroundColor(.white)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 16)
+                                .background(Color.needsButton)
+                                .cornerRadius(12)
+                                .opacity(selectedNeed == need ? 1.0 : 0.5)
+                                .onTapGesture {
+                                    selectedNeed = need
+                                }
+                                .animation(.easeInOut(duration: 0.2), value: selectedNeed)
+                        }
+                    }
+                }
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        TextField(
+                            "",
+                            text: $customNeed,
+                            prompt: Text("Type your need...")
+                                .foregroundColor(.white.opacity(0.5))
+                        )
+                        .foregroundColor(.white)
+
+                        Button(action: {
+                            if !customNeed.isEmpty {
+                                selectedNeed = customNeed
+                                customNeed = ""
+                            }
+                        }) {
+                            Image(systemName: "multiply.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(.white.opacity(0.5))
+                        }
+                    }
+                    .padding()
+                    .background(Color.needsButton)
+                    .cornerRadius(20)
+                }
+            }
+            .padding(.leading, 10)
+            .padding(.trailing, 10)
+            .padding(.top, 16)
+            .padding(.bottom, 40)
+            .background(
+                Color.emotionBar
+                    .clipShape(
+                        UnevenRoundedRectangle(
+                            cornerRadii: .init(
+                                topLeading: 0,
+                                bottomLeading: 40,
+                                bottomTrailing: 40,
+                                topTrailing: 0
+                            )
+                        )
+                    )
+            )
+
+            Button(action: {
+                print("Checkmark tapped with need: \(selectedNeed ?? "none")")
+            }) {
+                Image(systemName: "checkmark")
+                    .font(.largeTitle)
+                    .foregroundColor(.white)
+                    .padding(15)
+                    .background(Color.checkmark)
+                    .clipShape(Circle())
+                    .shadow(color: .checkmarkDropShadow.opacity(1), radius: 0, x: 0, y: 8)
+            }
+            .offset(x: 140, y: -110)
+        }
+    }
+}
+
+#Preview {
+    @Previewable @State var selectedNeed: String? = nil
+    @Previewable @State var customNeed: String = ""
+
+    NeedCard(selectedNeed: $selectedNeed, customNeed: $customNeed)
+}
