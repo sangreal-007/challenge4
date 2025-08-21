@@ -85,3 +85,5 @@ Carthage/
 *.swp
 *.swo
 *~
+challenge4.xcodeproj/project.pbxproj
+challenge4.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
