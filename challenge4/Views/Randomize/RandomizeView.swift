@@ -51,17 +51,17 @@ struct RandomizeView: View {
                             .frame(width: 240)
                             .offset(x: 80, y: 160)
                         
-                        Image("RabbitGrown")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 360)
-                            .offset(x: -10, y: 60)
+                        LottieView(name: "rabbit talk mom", // the name is the name of the .json file
+                                   loopMode: .loop, contentMode: .scaleAspectFit, speed: 1.0)
+                                .frame(width: 283, height: 345)
+                                .offset(x: -300, y: 50)
+                                .scaleEffect(0.2)
                         
-                        Image("RabbitChild")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 280)
-                            .offset(x: 10, y: 80)
+                        LottieView(name: "rabbit talk child", // the name is the name of the .json file
+                                   loopMode: .loop, contentMode: .scaleAspectFit, speed: 1.0)
+                                .frame(width: 200, height: 300)
+                                .offset(x: -100, y: 50)
+                                .scaleEffect(0.15)
                         
                         RandomizeRecordButton()
                             .scaleEffect(1.1)
@@ -70,9 +70,7 @@ struct RandomizeView: View {
                 }
             }
             .overlay(alignment: .topLeading) {
-                BackButton(onBack: {
-                    dismiss()
-                })
+                BackButton()
                 .padding(.top, 20)
                 .padding(.leading, 20)
                 .scaleEffect(1.2)
