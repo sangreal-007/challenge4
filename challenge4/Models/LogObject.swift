@@ -13,15 +13,15 @@ class LogObject {
     var id: UUID
     var date: Date
     var observation: RabitFaceObject?
-    var feeling: String?
-    var needs: [NeedObject]
+    var feeling: FeelingObject?
+    var needs: NeedObject?
     
     init(
         id: UUID = UUID(),
         date: Date = Date(),
         observation: RabitFaceObject? = nil,
-        feeling: String? = nil,
-        needs: [NeedObject] = []
+        feeling: FeelingObject? = nil,
+        needs: NeedObject? = nil
     ) {
         self.id = id
         self.date = date
@@ -30,4 +30,3 @@ class LogObject {
         self.needs = needs
     }
 }
-

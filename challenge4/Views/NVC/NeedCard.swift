@@ -9,9 +9,12 @@ import SwiftUI
 
 struct NeedCard: View {
     let needs = ["Rest", "Sleep", "Eat", "Play", "Relax", "Exercise", "Connect"]
-    @Binding var selectedNeed: String?
+    @Binding var selectedNeeds: [String]
     @Binding var customNeed: String
-
+    @Binding var chosenNeeds: NeedObject?
+    
+    var onNext: (() -> Void)? = nil
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -34,11 +37,15 @@ struct NeedCard: View {
                                 .padding(.horizontal, 16)
                                 .background(Color.needsButton)
                                 .cornerRadius(12)
-                                .opacity(selectedNeed == need ? 1.0 : 0.5)
+                                .opacity(selectedNeeds.contains(need) ? 1.0 : 0.5) // highlight if selected
                                 .onTapGesture {
-                                    selectedNeed = need
+                                    if selectedNeeds.contains(need) {
+                                        selectedNeeds.removeAll { $0 == need } // unselect
+                                    } else {
+                                        selectedNeeds.append(need) // select
+                                    }
                                 }
-                                .animation(.easeInOut(duration: 0.2), value: selectedNeed)
+                                .animation(.easeInOut(duration: 0.2), value: selectedNeeds)
                         }
                     }
                 }
@@ -53,14 +60,11 @@ struct NeedCard: View {
                         .foregroundColor(.white)
 
                         Button(action: {
-                            if !customNeed.isEmpty {
-                                selectedNeed = customNeed
-                                customNeed = ""
-                            }
+                            customNeed = ""
                         }) {
-                            Image(systemName: "multiply.circle.fill")
+                            Image(systemName: "xmark.circle.fill")
                                 .font(.title2)
-                                .foregroundColor(.white.opacity(0.5))
+                                .foregroundColor(.white.opacity(0.8))
                         }
                     }
                     .padding()
@@ -86,25 +90,35 @@ struct NeedCard: View {
                     )
             )
 
-            Button(action: {
-                print("Checkmark tapped with need: \(selectedNeed ?? "none")")
-            }) {
-                Image(systemName: "checkmark")
-                    .font(.largeTitle)
-                    .foregroundColor(.white)
-                    .padding(15)
-                    .background(Color.checkmark)
-                    .clipShape(Circle())
-                    .shadow(color: .checkmarkDropShadow.opacity(1), radius: 0, x: 0, y: 8)
+            if !selectedNeeds.isEmpty || !customNeed.isEmpty {
+                Button(action: {
+                    print("✅ Confirm needs")
+                    if !customNeed.isEmpty {
+                        selectedNeeds.append(customNeed)
+                        customNeed = ""
+                    }
+                    chosenNeeds?.needs = selectedNeeds
+                    onNext?()
+                }) {
+                    Image(systemName: "checkmark")
+                        .font(.largeTitle)
+                        .foregroundColor(.white)
+                        .padding(15)
+                        .background(Color.checkmark)
+                        .clipShape(Circle())
+                        .shadow(color: .checkmarkDropShadow.opacity(1), radius: 0, x: 0, y: 8)
+                }
+                .offset(x: 140, y: -110)
             }
-            .offset(x: 140, y: -110)
+
         }
     }
 }
 
 #Preview {
-    @Previewable @State var selectedNeed: String? = nil
+    @Previewable @State var selectedNeeds: [String] = [""]
     @Previewable @State var customNeed: String = ""
-
-    NeedCard(selectedNeed: $selectedNeed, customNeed: $customNeed)
+    @Previewable @State var needs: NeedObject? = NeedObject(needs: [""])
+    
+    NeedCard(selectedNeeds: $selectedNeeds, customNeed: $customNeed, chosenNeeds: $needs)
 }

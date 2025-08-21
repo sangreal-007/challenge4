@@ -63,7 +63,7 @@ struct Cards: View {
                 .frame(height: 150)
         case .why, .games:
             // Both Why and Games use a RecordButton as their content
-            RecordButton()
+            BackButton()
         case .need:
             Text("Rest")
                 .font(.headline)

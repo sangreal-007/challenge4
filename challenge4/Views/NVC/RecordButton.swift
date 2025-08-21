@@ -8,21 +8,35 @@
 import SwiftUI
 
 struct RecordButton: View {
+    @Binding var feeling: FeelingObject?
+    @StateObject private var recorderController = AudioRecorderController()
+    
     var onNext: (() -> Void)? = nil
     
     var body: some View {
         ZStack {
             Button(action: {
-                print("Recording Started!")
+                if recorderController.isRecording {
+                    if let filePath = recorderController.stopRecordingWithoutLimit() {
+                        print("Recording saved at: \(filePath)")
+                        feeling = FeelingObject(audioFilePath: filePath)
+                    }
+                } else {
+                    recorderController.requestPermission {
+                        recorderController.startRecording()
+                    }
+                    print("Recording Started!")
+                }
             }) {
                 Image(systemName: "microphone.fill")
                     .font(.largeTitle)
-                    .foregroundColor(.white)
+                    .foregroundColor(recorderController.isRecording ? .red : .white)
                     .padding(20)
-                    .background(Color.microphone)
+                    .background(recorderController.isRecording ? Color.white : Color.microphone)
                     .clipShape(Circle())
                     .shadow(color: .microphoneDropShadow.opacity(1), radius: 0, x: 0, y: 8)
             }
+
             HStack {
                 Spacer()
                 Button(action: {
@@ -44,5 +58,12 @@ struct RecordButton: View {
 }
 
 #Preview {
-    RecordButton()
+    @Previewable @State var feeling: FeelingObject? = FeelingObject(audioFilePath: "")
+    @Previewable @State var isNextActive: Bool = false
+
+    RecordButton(feeling: $feeling, onNext: {
+        if feeling != nil {
+            isNextActive = true
+        }
+    })
 }

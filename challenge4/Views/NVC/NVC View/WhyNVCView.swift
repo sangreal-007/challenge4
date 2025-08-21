@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct WhyNVCView:View {
+    //Log Object
+    @Binding var observation: RabitFaceObject?
+    @State var feeling: FeelingObject? = FeelingObject(audioFilePath: "")
+    
     @State private var isNextActive: Bool = false
     @Environment(\.dismiss) private var dismiss
     var body: some View {
@@ -26,7 +30,7 @@ struct WhyNVCView:View {
                                 .font(.largeTitle)
                                 .foregroundColor(.white)
                             Button(action: {
-                                print("Megaphone tapped!")
+                                print("Megaphone tapped!") // change it into voice over
                             }) {
                                 Image(systemName: "speaker.wave.3.fill")
                                     .font(.largeTitle)
@@ -50,21 +54,20 @@ struct WhyNVCView:View {
                             .resizable()
                             .frame(width: 283, height: 345)
                             .offset(x: 0, y: 50)
-                        RecordButton(onNext: {
+                        RecordButton(feeling: $feeling, onNext: {
                             isNextActive = true
                         })
                             .offset(x: 0, y:270)
-                        NavigationLink(
-                            destination: NeedNVCView(),
-                               isActive: $isNextActive
-                           ) {
-                               EmptyView()
-                           }
+
                     }
                     
                 }
             }
+            .navigationDestination(isPresented: $isNextActive) {
+                NeedNVCView(observation: $observation, feeling: $feeling)
+            }
         }
+
         .navigationBarBackButtonHidden(true)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -85,5 +88,8 @@ struct WhyNVCView:View {
 }
 
 #Preview {
-    WhyNVCView()
+    @Previewable @State var observation: RabitFaceObject? = RabitFaceObject(name: "", image: "")
+    @Previewable @State var isNextActive: Bool = false
+
+    WhyNVCView(observation: $observation)
 }

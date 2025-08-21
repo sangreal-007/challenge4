@@ -7,33 +7,33 @@
 import SwiftUI
 
 struct EmotionBar: View {
-    @Binding var selectedName: String?
+    @Binding var observation: RabitFaceObject?
     var onNext: (() -> Void)? = nil
-
+    
     var body: some View {
         ZStack{
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     ForEach(emotionFace) { face in
-                        VStack {
-                            Image(face.image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 80, height: 80)
-                                .onTapGesture {
-                                    selectedName = face.name
-                                }
-                            
-                            Text(face.name)
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding(.top, -10)
-                                .opacity(selectedName == face.name ? 1.0 : 0.5)
-                                .fontWeight(selectedName == face.name ? .bold : .regular)
-                                .onTapGesture {
-                                    selectedName = face.name
-                                }
+                        Button {
+                            observation?.image = face.image
+                            observation?.name = face.name
+                        } label: {
+                            VStack {
+                                Image(face.image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                Text(face.name)
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .padding(.top, -10)
+                                    .opacity(observation?.name == face.name ? 1.0 : 0.5)
+                                    .fontWeight(observation?.name == face.name ? .bold : .regular)
+                            }
                         }
+                        .buttonStyle(.plain)
+
                     }
                 }
             }
@@ -52,10 +52,10 @@ struct EmotionBar: View {
                     )
             )
             .padding(7)
-            
-            if let selected = selectedName, !selected.isEmpty {
+
+            if let selected = observation?.name, !selected.isEmpty {
                 Button(action: {
-                    onNext?()  // call closure on tap
+                    onNext?()
                 }) {
                     Image(systemName: "checkmark")
                         .font(.largeTitle)
@@ -67,12 +67,20 @@ struct EmotionBar: View {
                 }
                 .offset(x: 140, y: -80)
                 .transition(.opacity)
-                .animation(.easeInOut, value: selectedName)
+                .animation(.easeInOut, value: observation?.name)
             }
         }
     }
 }
 
 #Preview {
-    EmotionBar(selectedName: .constant(""))
+    @Previewable @State var observation: RabitFaceObject? = RabitFaceObject(name: "", image: "")
+    @Previewable @State var isNextActive: Bool = false
+
+    EmotionBar(observation: $observation, onNext: {
+        if observation != nil {
+            isNextActive = true
+        }
+    })
 }
+

@@ -11,10 +11,10 @@ import Foundation
 @Model
 class NeedObject {
     var id: UUID
-    var title: String
+    var needs: [String]
     
-    init(id: UUID = UUID(), title: String) {
+    init(id: UUID = UUID(), needs: [String] = []) {
         self.id = id
-        self.title = title
+        self.needs = needs
     }
 }

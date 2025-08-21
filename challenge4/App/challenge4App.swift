@@ -27,6 +27,6 @@ struct challenge4App: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(for: [LogObject.self, NeedObject.self, RabitFaceObject.self, FeelingObject.self])
     }
 }

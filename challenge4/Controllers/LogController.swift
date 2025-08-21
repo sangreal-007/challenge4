@@ -1,8 +1,8 @@
 //
-//  logController.swift
+//  LogController.swift
 //  challenge4
 //
-//  Created by Dhafindra Razaqa Stefano on 19/08/25.
+//  Created by Muhammad Dwiva Arya Erlangga on 19/08/25.
 //
 
 import Foundation
@@ -17,7 +17,7 @@ class LogController: ObservableObject {
     }
     
     // MARK: - LogObject
-    func addLog(observation: RabitFaceObject?, feeling: String?, needs: [NeedObject]) {
+    func addLog(observation: RabitFaceObject?, feeling: FeelingObject?, needs: NeedObject) {
         let log = LogObject(observation: observation, feeling: feeling, needs: needs)
         modelContext.insert(log)
         save()
@@ -34,17 +34,18 @@ class LogController: ObservableObject {
     }
     
     // MARK: - NeedObject
-    func addNeed(title: String) -> NeedObject {
-        let need = NeedObject(title: title)
+    func addNeed(_ newNeeds: [String]) -> NeedObject {
+        let need = NeedObject(needs: newNeeds)
         modelContext.insert(need)
         save()
         return need
     }
-    
+
     func fetchNeeds() -> [NeedObject] {
-        let descriptor = FetchDescriptor<NeedObject>(sortBy: [SortDescriptor(\.title)])
+        let descriptor = FetchDescriptor<NeedObject>()
         return (try? modelContext.fetch(descriptor)) ?? []
     }
+
     
     // MARK: - FeelingObject (with audio)
     func addFeeling(audioPath: String) {
@@ -67,4 +68,3 @@ class LogController: ObservableObject {
         }
     }
 }
-

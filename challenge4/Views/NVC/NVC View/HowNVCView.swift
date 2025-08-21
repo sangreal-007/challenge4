@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct HowNVCView: View {
-    @State private var selectedEmotion: String? = nil
     @State private var isNextActive: Bool = false
     @Environment(\.dismiss) private var dismiss
+    @State private var observation: RabitFaceObject? = RabitFaceObject(name: "", image: "")
     
     var body: some View {
         NavigationStack{
@@ -28,7 +28,7 @@ struct HowNVCView: View {
                                 .font(.largeTitle)
                                 .foregroundColor(.white)
                             Button(action: {
-                                print("Megaphone tapped!")
+                                print("Megaphone tapped!") // change it into the voice over
                             }) {
                                 Image(systemName: "speaker.wave.3.fill")
                                     .font(.largeTitle)
@@ -39,37 +39,41 @@ struct HowNVCView: View {
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
                     }
-                    ZStack{
+                    ZStack {
                         Image("Moon")
                             .resizable()
                             .scaledToFit()
                             .offset(x: 0, y: 251)
+                            .allowsHitTesting(false)
+
                         Image("ShadowOfRabbit")
                             .resizable()
                             .frame(width: 170, height: 70)
                             .offset(x: 0, y:200)
+                            .allowsHitTesting(false)
+
                         Image("RabbitImage")
                             .resizable()
                             .frame(width: 283, height: 345)
                             .offset(x: 0, y: 50)
-                        EmotionBar(selectedName: $selectedEmotion, onNext: {
-                            if let emotion = selectedEmotion {
+                            .allowsHitTesting(false)
+
+                        EmotionBar(observation: $observation, onNext: {
+                            if observation != nil {
                                 isNextActive = true
                             }
                         })
                         .offset(x: 0, y: 290)
-                        NavigationLink(
-                            destination: WhyNVCView(),
-                               isActive: $isNextActive
-                           ) {
-                               EmptyView()
-                           }
                     }
-                    
+
                 }
                 
             }
+            .navigationDestination(isPresented: $isNextActive) {
+                WhyNVCView(observation: $observation)
+            }
         }
+
         .navigationBarBackButtonHidden(true)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {

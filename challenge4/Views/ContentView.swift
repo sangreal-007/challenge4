@@ -60,3 +60,16 @@ struct ContentView: View {
     ContentView()
         .modelContainer(for: [LogObject.self, NeedObject.self, RabitFaceObject.self, FeelingObject.self, Item.self], inMemory: true)
 }
+
+//// MARK: JUST TO TEST BACKEND
+//
+//struct ContentView: View {
+//    var body: some View {
+//        HowNVCView()
+//    }
+//}
+//
+//#Preview {
+//    ContentView()
+//        .modelContainer(for: [LogObject.self, NeedObject.self, RabitFaceObject.self, FeelingObject.self, Item.self], inMemory: true)
+//}
