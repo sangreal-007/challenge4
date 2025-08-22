@@ -6,53 +6,82 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CalendarView: View {
+    @Environment(\.modelContext) private var modelContext
     @State private var currentDate = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 1)) ?? Date()
+    @State private var logs: [LogObject] = []
+    @State private var animationDirection: CalendarHelper.AnimationDirection = .none
     private let calendar = Calendar.current
-    
-    // --- Random completed dates for demo ---
-    private let completedDates: Set<Int> = {
-        let all = Array(1...31)
-        return Set(all.shuffled().prefix(8))
-    }()
+    private let calendarHelper = CalendarHelper()
     
     // Month and Year
     private var monthYear: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM YYYY"
-        return formatter.string(from: currentDate)
+        return calendarHelper.monthYear(date: currentDate)
     }
     
     // Days in month including leading empty slots
     private var daysInMonth: [Date?] {
-        guard let monthRange = calendar.range(of: .day, in: .month, for: currentDate),
-              let firstDayOfMonth = calendar.dateInterval(of: .month, for: currentDate)?.start else { return [] }
-        
-        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)
-        var days: [Date?] = Array(repeating: nil, count: firstWeekday - 1)
-        
-        for day in monthRange {
-            if let date = calendar.date(byAdding: .day, value: day - 1, to: firstDayOfMonth) {
-                days.append(date)
-            }
-        }
-        return days
+        return calendarHelper.daysInMonth(date: currentDate)
     }
     
     // Number of rows (weeks) in this month
     private var numberOfWeeks: Int {
-        return Int(ceil(Double(daysInMonth.count) / 7.0))
+        return calendarHelper.numberOfWeeks(for: daysInMonth)
     }
     
     // --- Helper: check if a date should show a star ---
     private func isCompleted(date: Date) -> Bool {
-        let day = calendar.component(.day, from: date)
-        return date <= Date() && completedDates.contains(day)
+        return calendarHelper.isCompleted(date: date, logs: logs)
+    }
+    
+    // --- Fetch logs when view appears or month changes ---
+    private func fetchLogs() {
+        let logController = LogController(modelContext: modelContext)
+        logs = logController.fetchLogs()
+    }
+    
+    // --- Check if current month is the present month (prevent future navigation) ---
+    private var isAtPresentMonth: Bool {
+        return calendarHelper.isAtPresentMonth(date: currentDate)
+    }
+    
+    // --- Navigation functions with animation ---
+    private func goToPreviousMonth() {
+        if let newDate = calendar.date(byAdding: .month, value: -1, to: currentDate) {
+            animationDirection = .left
+            withAnimation(.easeInOut(duration: 0.3)) {
+                currentDate = newDate
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                animationDirection = .none
+                fetchLogs()
+            }
+        }
+    }
+    
+    private func goToNextMonth() {
+        if let newDate = calendar.date(byAdding: .month, value: 1, to: currentDate), !isAtPresentMonth {
+            animationDirection = .right
+            withAnimation(.easeInOut(duration: 0.3)) {
+                currentDate = newDate
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                animationDirection = .none
+                fetchLogs()
+            }
+        }
+    }
+    
+    // --- Get transition animation ---
+    private func getTransition() -> AnyTransition {
+        return calendarHelper.getTransition(for: animationDirection)
     }
     
     var body: some View {
-        ZStack {
+        NavigationStack {
+            ZStack {
             // Background
             Color(red: 7/255, green: 7/255, blue: 32/255).ignoresSafeArea()
             
@@ -73,7 +102,7 @@ struct CalendarView: View {
                         BackButton()
                         Spacer()
                         Text("Memory Stars")
-                            .font(.largeTitle)
+                            .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                         Spacer()
@@ -82,115 +111,74 @@ struct CalendarView: View {
                     Spacer().frame(height: 30)
                     
                     // Month/year row closer to calendar
-                    HStack(spacing: 8) {
+                    HStack(spacing: 12) {
                         Button(action: {
-                            if let newDate = calendar.date(byAdding: .month, value: -1, to: currentDate) {
-                                currentDate = newDate
-                            }
+                            goToPreviousMonth()
                         }) {
                             Image(systemName: "chevron.left")
                                 .foregroundColor(.white)
                                 .font(.title)
-                                .fontWeight(.bold)
+//                                .fontWeight(.bold)
                         }
+                        .frame(width: 44, height: 44)
                         
                         Text(monthYear)
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
+                            .frame(minWidth: 120)
                         
                         Button(action: {
-                            if let newDate = calendar.date(byAdding: .month, value: 1, to: currentDate) {
-                                currentDate = newDate
-                            }
+                            goToNextMonth()
                         }) {
                             Image(systemName: "chevron.right")
-                                .foregroundColor(.white)
+                                .foregroundColor(isAtPresentMonth ? .gray : .white)
                                 .font(.title)
-                                .fontWeight(.bold)
+//                                .fontWeight(.bold)
                         }
+                        .frame(width: 44, height: 44)
+                        .disabled(isAtPresentMonth)
                     }
                 }
                 .padding(.horizontal)
-                .padding(.bottom, 10)
+                .padding(.bottom, 20)
                 
                 // Calendar container
-                VStack(spacing: 0) {
-                    // Days of week header
-                    HStack {
-                        ForEach(["S","M","T","W","T","F","S"], id: \.self) { day in
-                            Text(day)
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundColor(Color(red: 118/255, green: 114/255, blue: 255/255))
-                                .frame(width: 39, height: 20)
-                        }
-                    }
-                    .padding(.top, 20)
-                    .padding(.bottom, 20)
-                    
-                    // Calendar grid (week by week)
-                    ForEach(0..<numberOfWeeks, id: \.self) { weekIndex in
-                        let weekDays = Array(daysInMonth.dropFirst(weekIndex * 7).prefix(7))
-                        
-                        ZStack {
-                            // Highlight line for past days in this row
-                            if let lastPastIndex = weekDays.lastIndex(where: { $0 != nil && $0! < Date() && calendar.isDate($0!, equalTo: currentDate, toGranularity: .month) }) {
-                                let firstPastIndex = weekDays.firstIndex(where: { $0 != nil && $0! < Date() && calendar.isDate($0!, equalTo: currentDate, toGranularity: .month) }) ?? lastPastIndex
-                                
-                                GeometryReader { geo in
-                                    let cellWidth = geo.size.width / 7
-                                    let xStart = CGFloat(firstPastIndex) * cellWidth
-                                    let width = CGFloat(lastPastIndex - firstPastIndex + 1) * cellWidth
-                                    
-                                    RoundedRectangle(cornerRadius: 18)
-                                        .fill(Color(red: 99/255, green: 75/255, blue: 255/255))
-                                        .opacity(0.46)
-                                        .frame(width: width - 1, height: 45)
-                                        .position(x: xStart + width/2, y: geo.size.height/2)
-                                }
-                            }
-                            
-                            // Day numbers with stars
-                            HStack(spacing: 0) {
-                                ForEach(0..<7, id: \.self) { i in
-                                    if let date = (i < weekDays.count ? weekDays[i] : nil) {
-                                        let dayNumber = calendar.component(.day, from: date)
-                                        
-                                        ZStack {
-                                            if isCompleted(date: date) {
-                                                Image("Star")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(width: 40, height: 40)
-                                            }
-                                            
-                                            Text("\(dayNumber)")
-                                                .font(.title2)
-                                                .fontWeight(.bold)
-                                                .foregroundColor(.white)
-                                        }
-                                        .frame(maxWidth: .infinity, minHeight: 50)
-                                        
-                                    } else {
-                                        Text("")
-                                            .frame(maxWidth: .infinity, minHeight: 50)
-                                    }
-                                }
-                            }
-                        }
-                        .frame(height: 40)
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
-                }
-                .background(Color(red: 21/255, green: 20/255, blue: 80/255))
-                .cornerRadius(20)
-                .padding(.horizontal, 20)
+                CalendarContainer(
+                    currentDate: currentDate,
+                    daysInMonth: daysInMonth,
+                    numberOfWeeks: numberOfWeeks,
+                    logs: logs,
+                    isCompleted: isCompleted,
+                    getTransition: getTransition
+                )
                 
                 Spacer()
             }
+            }
+            .onAppear {
+                fetchLogs()
+            }
+            .onChange(of: currentDate) { _, _ in
+                if animationDirection == .none {
+                    fetchLogs()
+                }
+            }
+            .gesture(
+                DragGesture()
+                    .onEnded { value in
+                        let threshold: CGFloat = 50
+                        if value.translation.width > threshold {
+                            // Swipe right - go to previous month
+                            goToPreviousMonth()
+                        } else if value.translation.width < -threshold {
+                            // Swipe left - go to next month
+                            goToNextMonth()
+                        }
+                    }
+            )
         }
+        .navigationBarHidden(true)
     }
 }
 
