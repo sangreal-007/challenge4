@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "bunnies_bed.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
