@@ -51,12 +51,8 @@ struct NeedNVCView: View {
                     }
                     NavigationStack {
                         ZStack {
-                            Image("Rabies")
-                                .resizable()
-                                .scaledToFit()
-                                .scaleEffect(1.7)
-                                .offset(x: 0, y: 280)
-                                .allowsHitTesting(false)
+                            RabbitsTalkingView()
+                                .offset(x: 0, y: 22)
                             
                             NeedCard(
                                 selectedNeeds: $selectedNeeds,
@@ -78,8 +74,14 @@ struct NeedNVCView: View {
                     .navigationDestination(isPresented: $isNextActive) {
                         if child {
                             HowNVCView(observationParent: $observationParent, feelingParent: $feelingParent, needsParent: $needsParent, observationChild: $observationChild, feelingChild: $feelingChild, needsChild: $needsChild, answerGame: $answerGame, child: $child)
+                                .transaction { transaction in
+                                    transaction.disablesAnimations = true
+                                }
                         } else{
                             RandomizeView(observationParent: $observationParent, feelingParent: $feelingParent, needsParent: $needsParent, observationChild: $observationChild, feelingChild: $feelingChild, needsChild: $needsChild, answerGame: $answerGame, child: $child)
+                                .transaction { transaction in
+                                    transaction.disablesAnimations = true
+                                }
                         }
                     }
                 }
@@ -88,13 +90,7 @@ struct NeedNVCView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { dismiss() }) {
-                        Image(systemName: "chevron.backward")
-                            .font(.title)
-                            .foregroundColor(.white)
-                            .padding(10)
-                            .background(Color.cheveronButton)
-                            .clipShape(Circle())
-                            .shadow(color: .cheveronDropShadow.opacity(1), radius: 0, x: 0, y: 8)
+                        BackButton()
                     }
                 }
             }

@@ -10,7 +10,7 @@ import SwiftData
 
 struct CalendarView: View {
     @Environment(\.modelContext) private var modelContext
-    @State private var currentDate = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 1)) ?? Date()
+    @State private var currentDate = Date()
     @State private var logs: [LogObject] = []
     @State private var animationDirection: CalendarHelper.AnimationDirection = .none
     private let calendar = Calendar.current

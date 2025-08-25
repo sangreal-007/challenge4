@@ -49,34 +49,7 @@ struct RandomizeView: View {
                     }
                     
                     ZStack {
-                        Image("Moon")
-                            .resizable()
-                            .scaledToFit()
-                            .offset(x: 0, y: 251)
-                        
-                        Image("StoneBig")
-                            .resizable() 
-                            .scaledToFit()
-                            .frame(width: 110)
-                            .offset(x: -100, y: 160)
-                        
-                        Image("StoneWide")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 240)
-                            .offset(x: 80, y: 160)
-                        
-                        LottieView(name: "rabbit talk mom", // the name is the name of the .json file
-                                   loopMode: .loop, contentMode: .scaleAspectFit, speed: 1.0)
-                                .frame(width: 283, height: 345)
-                                .offset(x: -300, y: 50)
-                                .scaleEffect(0.2)
-                        
-                        LottieView(name: "rabbit talk child", // the name is the name of the .json file
-                                   loopMode: .loop, contentMode: .scaleAspectFit, speed: 1.0)
-                                .frame(width: 200, height: 300)
-                                .offset(x: -100, y: 50)
-                                .scaleEffect(0.15)
+                        RabbitsTalkingView()
                         
                         RecordButton(
                             feelingParent: $feelingParent,
@@ -114,8 +87,7 @@ struct RandomizeView: View {
                             }
 
                         )
-                        .scaleEffect(1.1)
-                        .offset(x: 0, y: 272)
+                        .offset(x: 0, y: 270)
 
                     }
                 }
@@ -126,15 +98,15 @@ struct RandomizeView: View {
 //                LogListPage()
                 
             }
-            .overlay(alignment: .topLeading) {
-                BackButton()
-                .padding(.top, 20)
-                .padding(.leading, 20)
-                .scaleEffect(1.2)
-                .zIndex(10)
-            }
         }
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    BackButton()
+                }
+            }
+        }
     }
 }
 
