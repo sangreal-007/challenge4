@@ -10,18 +10,26 @@ import Foundation
 let emotionFace: [RabitFaceObject] = [
     RabitFaceObject(
         name: "Happy",
-        image: "HappyFace"
+        image: "Happy"
     ),
     RabitFaceObject(
         name: "Sad",
-        image: "SadFace"
+        image: "Sad"
+    ),
+    RabitFaceObject(
+        name: "Peaceful",
+        image: "Peaceful"
+    ),
+    RabitFaceObject(
+        name: "Fear",
+        image: "Fear"
+    ),
+    RabitFaceObject(
+        name: "Surpised",
+        image: "Surprise"
     ),
     RabitFaceObject(
         name: "Angry",
-        image: "AngryFace"
-    ),
-    RabitFaceObject(
-        name: "Surprised",
-        image: "SurprisedFace"
+        image: "Angry"
     )
 ]

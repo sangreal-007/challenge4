@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NeedCard: View {
-    let needss = ["Rest", "Sleep", "Eat", "Play", "Relax", "Exercise", "Connect"]
+    let needs = ["Play", "Sleep", "Talk", "Help", "Love"]
     @Binding var selectedNeeds: [String]
     @Binding var customNeed: String
     @Binding var child: Bool
@@ -19,58 +19,69 @@ struct NeedCard: View {
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
+                // Title
                 HStack {
                     Text("Needs")
-                        .font(.title)
+                        .font(.title).bold()
                         .foregroundColor(.white)
-                    Image(systemName: "list.bullet")
-                        .font(.title)
-                        .foregroundColor(.white)
+                    
+                    Button(action: {
+                        print("Button tapped")
+                    }) {
+                        Image(systemName: "list.bullet")
+                            .font(.title)
+                            .foregroundColor(.white)
+                    }.transition(.opacity)
                 }
 
+                // Chips for needs
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
-                        ForEach(needss, id: \.self) { need in
+                        ForEach(needs, id: \.self) { need in
                             Text(need)
-                                .font(.body)
+                                .font(.title2).bold() // bigger font
                                 .foregroundColor(.white)
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12) // more padding
+                                .padding(.horizontal, 20)
                                 .background(Color.needsButton)
-                                .cornerRadius(12)
-                                .opacity(selectedNeeds.contains(need) ? 1.0 : 0.5) // highlight if selected
+                                .cornerRadius(20) // more rounded
+                                .opacity(selectedNeeds.contains(need) ? 1.0 : 0.5)
                                 .onTapGesture {
                                     if selectedNeeds.contains(need) {
-                                        selectedNeeds.removeAll { $0 == need } // unselect
+                                        selectedNeeds.removeAll { $0 == need }
                                     } else {
-                                        selectedNeeds.append(need) // select
+                                        selectedNeeds.append(need)
                                     }
                                 }
                                 .animation(.easeInOut(duration: 0.2), value: selectedNeeds)
                         }
                     }
                 }
+                
+                // Custom need input
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         TextField(
                             "",
                             text: $customNeed,
-                            prompt: Text("Type your need...")
+                            prompt: Text("Other type here....") // updated placeholder
                                 .foregroundColor(.white.opacity(0.5))
                         )
+                        .font(.title3) // bigger font
                         .foregroundColor(.white)
 
                         Button(action: {
                             customNeed = ""
                         }) {
-                            Image(systemName: "xmark.circle.fill")  
-                                .font(.title2)
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title) // slightly bigger icon
                                 .foregroundColor(.white.opacity(0.8))
                         }
                     }
-                    .padding()
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 20)
                     .background(Color.needsButton)
-                    .cornerRadius(20)
+                    .cornerRadius(30) // rounder pill shape
                 }
             }
             .padding(.leading, 10)
@@ -91,6 +102,7 @@ struct NeedCard: View {
                     )
             )
 
+            // Confirm button
             if !selectedNeeds.isEmpty || !customNeed.isEmpty {
                 Button(action: {
                     print("✅ Confirm needs")
@@ -116,14 +128,13 @@ struct NeedCard: View {
                     Image(systemName: "checkmark")
                         .font(.largeTitle)
                         .foregroundColor(.white)
-                        .padding(15)
+                        .padding(18)
                         .background(Color.checkmark)
                         .clipShape(Circle())
                         .shadow(color: .checkmarkDropShadow.opacity(1), radius: 0, x: 0, y: 8)
                 }
                 .offset(x: 140, y: -110)
             }
-
         }
     }
 }

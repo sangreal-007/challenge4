@@ -67,22 +67,11 @@ struct HowNVCView: View {
                         .multilineTextAlignment(.center)
                     }
                     ZStack {
-                        Image("Moon")
+                        Image("Rabies")
                             .resizable()
-                            .scaledToFit()
-                            .offset(x: 0, y: 251)
-                            .allowsHitTesting(false)
-
-                        Image("ShadowOfRabbit")
-                            .resizable()
-                            .frame(width: 170, height: 70)
-                            .offset(x: 0, y:200)
-                            .allowsHitTesting(false) 
-
-                        Image("RabbitImage")
-                            .resizable()
-                            .frame(width: 283, height: 345)
-                            .offset(x: 0, y: 50)
+                           .scaledToFit()
+                           .scaleEffect(1.7)
+                            .offset(x: 0, y: 280)
                             .allowsHitTesting(false)
 
                         EmotionBar(
@@ -97,17 +86,15 @@ struct HowNVCView: View {
                                     }
                                 }
                             )
+                        
                         .offset(x: 0, y: 290)
                     }
-
                 }
-                
             }
             .navigationDestination(isPresented: $isNextActive) {
                 WhyNVCView(observationParent: $observationParent, feelingParent: $feelingParent, needsParent: $needsParent, observationChild: $observationChild, feelingChild: $feelingChild, needsChild: $needsChild, answerGame: $answerGame, child: $child)
             }
         }
-
         .navigationBarBackButtonHidden(true)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {

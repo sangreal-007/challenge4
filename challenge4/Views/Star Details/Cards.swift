@@ -55,6 +55,7 @@ struct Cards: View {
             }
             Text(rabitFace ?? "No feeling")
                 .foregroundColor(.white)
+                .padding(.bottom, 12) 
 
         case .why:
             if let audioPathFeeling {
@@ -68,6 +69,7 @@ struct Cards: View {
                     Label("Play Game Story", systemImage: "play.circle.fill")
                         .foregroundColor(.white)
                 }
+                .padding(.bottom, 12)
             } else {
                 Text("No reason recorded")
                     .foregroundColor(.gray)
@@ -76,15 +78,19 @@ struct Cards: View {
 
         case .need:
             if !needs.isEmpty {
-                ForEach(needs, id: \.self) { need in
-                    Text(need)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color("EmotionBarColorDropShadow"))
-                        .clipShape(Capsule())
+                HStack {
+                    ForEach(needs, id: \.self) { need in
+                        Text(need)
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color("EmotionBarColorDropShadow"))
+                            .clipShape(Capsule())
+                    }
                 }
+                .padding(.bottom, 12)
+                
             } else {
                 Text("No needs logged")
                     .foregroundColor(.gray)
@@ -102,9 +108,11 @@ struct Cards: View {
                     Label("Play Game Story", systemImage: "play.circle.fill")
                         .foregroundColor(.white)
                 }
+                .padding(.bottom, 12)
             } else {
                 Text("No reason recorded")
                     .foregroundColor(.gray)
+                
             }
         }
     }
