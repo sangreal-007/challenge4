@@ -5,84 +5,173 @@
 //  Created by Dhafindra Razaqa Stefano on 21/08/25.
 //
 
+
 import SwiftUI
 
 struct Cards: View {
-    /// Represents the current card state: Feeling, Why, Need, or Games.
     enum CardState {
         case feeling, why, need, games
     }
 
-    /// The state controlling which card content to show.
     var state: CardState
-
+    
+    // 👇 Pass the data directly
+    var titleText: String
+    var rabitFace: String? = nil
+    var imageName: String? = nil
+    var audioPathFeeling: String? = nil
+    var audioPathGame: String? = nil
+    var needs: [String] = []
+    
+    @StateObject private var audioController = AudioRecorderController()
+    
     var body: some View {
         VStack(spacing: 0) {
-            // Title section
-            Text(title)
+            Text(titleText)
                 .font(.headline)
                 .foregroundColor(.white)
                 .padding()
 
-            // Thin separator with default divider colour at 10 % opacity
             Rectangle()
                 .fill(Color.gray.opacity(0.1))
                 .frame(height: 1)
 
-            // Content section
             content
-                .padding()
+                .padding(2)
         }
         .background(Color("EmotionBarColor"))
         .cornerRadius(20)
         .padding(.horizontal, 5)
     }
 
-    /// Returns the appropriate title for each state.
-    private var title: String {
-        switch state {
-        case .feeling:
-            return "How I'm Feeling Today"
-        case .why:
-            return "Why I Feel That Way"
-        case .need:
-            return "What I Need"
-        case .games:
-            return "Can you tell me a story about your childhood?"
-        }
-    }
-
-    /// Returns the appropriate content view for each state.
     @ViewBuilder
     private var content: some View {
         switch state {
         case .feeling:
-            Image("HappyFace")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 150)
-        case .why, .games:
-            // Both Why and Games use a RecordButton as their content
-            BackButton()
-        case .need:
-            Text("Rest")
-                .font(.headline)
+            if let imageName {
+                Image(imageName)
+                    .resizable()
+                    .frame(width: 90, height: 90)
+            }
+            Text(rabitFace ?? "No feeling")
                 .foregroundColor(.white)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(Color("EmotionBarColorDropShadow"))
-                .clipShape(Capsule())
+
+        case .why:
+            if let audioPathFeeling {
+                // CHANGE THE BUTTON
+                Button(action: {
+                    audioController.playRecording(fileName: audioPathFeeling)
+                    if let duration = audioController.getRecordingDuration(fileName: audioPathFeeling) {
+                        print("Audio duration: \(duration) seconds")
+                    }
+                }) {
+                    Label("Play Game Story", systemImage: "play.circle.fill")
+                        .foregroundColor(.white)
+                }
+            } else {
+                Text("No reason recorded")
+                    .foregroundColor(.gray)
+            }
+            
+
+        case .need:
+            if !needs.isEmpty {
+                ForEach(needs, id: \.self) { need in
+                    Text(need)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color("EmotionBarColorDropShadow"))
+                        .clipShape(Capsule())
+                }
+            } else {
+                Text("No needs logged")
+                    .foregroundColor(.gray)
+            }
+
+        case .games:
+            if let audioPathGame {
+                // CHANGE THE BUTTON
+                Button(action: {
+                    audioController.playRecording(fileName: audioPathGame)
+                    if let duration = audioController.getRecordingDuration(fileName: audioPathGame) {
+                        print("Audio duration: \(duration) seconds")
+                    }
+                }) {
+                    Label("Play Game Story", systemImage: "play.circle.fill")
+                        .foregroundColor(.white)
+                }
+            } else {
+                Text("No reason recorded")
+                    .foregroundColor(.gray)
+            }
         }
     }
 }
 
 #Preview {
-    VStack(spacing: 20) {
-        Cards(state: .feeling)
-        Cards(state: .why)
-        Cards(state: .need)
-        Cards(state: .games) // preview for the new Games state
+    VStack {
+        Cards(
+            state: .feeling,
+            titleText: "How I'm Feeling Today",
+            imageName: "HappyFace"
+        )
+        Cards(
+            state: .why,
+            titleText: "Why I Feel That Way",
+            audioPathFeeling: "Audio_123.m4a"
+        )
+        Cards(
+            state: .need,
+            titleText: "What I Need",
+            needs: ["Rest", "Play", "Connection"]
+        )
+        Cards(
+            state: .games,
+            titleText: "Can you tell me a story?",
+            audioPathGame: "Funny story"
+        )
     }
     .padding()
-    .background(Color(.systemBackground))
+    .background(Color.black)
+}
+
+
+//#Preview {
+//    VStack(spacing: 20) {
+//        Cards(state: .feeling)
+//        Cards(state: .why)
+//        Cards(state: .need)
+//        Cards(state: .games) // preview for the new Games state
+//    }
+//    .padding()
+//    .background(Color(.systemBackground))
+//}
+
+#Preview {
+    VStack(spacing: 20) {
+        Cards(
+            state: .feeling,
+            titleText: "How I'm Feeling Today",
+            imageName: "HappyFace"
+        )
+        Cards(
+            state: .why,
+            titleText: "Why I Feel That Way",
+            audioPathFeeling: "Audio_123.m4a"
+        )
+        Cards(
+            state: .need,
+            titleText: "What I Need",
+            needs: ["Rest", "Play", "Connection"]
+        )
+        Cards(
+            state: .games,
+            titleText: "Can you tell me a story?",
+            audioPathGame: "Funny story"
+        )
+    }
+    .padding()
+    .background(Color.black)
 }

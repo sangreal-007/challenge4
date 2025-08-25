@@ -39,8 +39,15 @@ struct CalendarView: View {
     // --- Fetch logs when view appears or month changes ---
     private func fetchLogs() {
         let logController = LogController(modelContext: modelContext)
-        logs = logController.fetchLogs()
+        
+        // Fetch *all logs* regardless of role
+        let descriptor = FetchDescriptor<LogObject>(
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+        
+        logs = (try? modelContext.fetch(descriptor)) ?? []
     }
+
     
     // --- Check if current month is the present month (prevent future navigation) ---
     private var isAtPresentMonth: Bool {

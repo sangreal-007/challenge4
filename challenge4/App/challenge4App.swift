@@ -27,6 +27,9 @@ struct challenge4App: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [LogObject.self, NeedObject.self, RabitFaceObject.self, FeelingObject.self])
+        .modelContainer(
+            for: [LogObject.self, NeedObject.self, RabitFaceObject.self, FeelingObject.self, Item.self],
+            inMemory: true
+        )
     }
 }

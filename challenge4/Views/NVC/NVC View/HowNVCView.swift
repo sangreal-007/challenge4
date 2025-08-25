@@ -8,9 +8,36 @@
 import SwiftUI
 
 struct HowNVCView: View {
+//    // MARK: - Parent
+//    @State private var observationParent: RabitFaceObject? = nil
+//    @State private var feelingParent: FeelingObject? = nil
+//    @State private var needsParent: NeedObject? = nil
+//    
+//    // MARK: - Child
+//    @State private var observationChild: RabitFaceObject? = nil
+//    @State private var feelingChild: FeelingObject? = nil
+//    @State private var needsChild: NeedObject? = nil
+//    
+//    // MARK: - Game
+//    @State private var answerGame: FeelingObject? = nil
+    
+    // MARK: - Parent
+    @Binding var observationParent: RabitFaceObject?
+    @Binding var feelingParent: FeelingObject?
+    @Binding var needsParent: NeedObject?
+
+    // MARK: - Child
+    @Binding var observationChild: RabitFaceObject?
+    @Binding var feelingChild: FeelingObject?
+    @Binding var needsChild: NeedObject?
+
+    // MARK: - Game
+    @Binding var answerGame: FeelingObject?
+
+    @Binding var child: Bool
+    
     @State private var isNextActive: Bool = false
     @Environment(\.dismiss) private var dismiss
-    @State private var observation: RabitFaceObject? = RabitFaceObject(name: "", image: "")
     
     var body: some View {
         NavigationStack{
@@ -50,7 +77,7 @@ struct HowNVCView: View {
                             .resizable()
                             .frame(width: 170, height: 70)
                             .offset(x: 0, y:200)
-                            .allowsHitTesting(false)
+                            .allowsHitTesting(false) 
 
                         Image("RabbitImage")
                             .resizable()
@@ -58,11 +85,18 @@ struct HowNVCView: View {
                             .offset(x: 0, y: 50)
                             .allowsHitTesting(false)
 
-                        EmotionBar(observation: $observation, onNext: {
-                            if observation != nil {
-                                isNextActive = true
-                            }
-                        })
+                        EmotionBar(
+                                observationParent: $observationParent,
+                                observationChild: $observationChild,
+                                child: $child,
+                                onNext: {
+                                    if !child && observationParent != nil {
+                                        isNextActive = true
+                                    } else if child && observationChild != nil {
+                                        isNextActive = true
+                                    }
+                                }
+                            )
                         .offset(x: 0, y: 290)
                     }
 
@@ -70,7 +104,7 @@ struct HowNVCView: View {
                 
             }
             .navigationDestination(isPresented: $isNextActive) {
-                WhyNVCView(observation: $observation)
+                WhyNVCView(observationParent: $observationParent, feelingParent: $feelingParent, needsParent: $needsParent, observationChild: $observationChild, feelingChild: $feelingChild, needsChild: $needsChild, answerGame: $answerGame, child: $child)
             }
         }
 
@@ -94,5 +128,26 @@ struct HowNVCView: View {
 }
 
 #Preview {
-    HowNVCView()
+    @Previewable @State var observationParent: RabitFaceObject? = nil
+    @Previewable @State var feelingParent: FeelingObject? = nil
+    @Previewable @State var needsParent: NeedObject? = nil
+    
+    @Previewable @State var observationChild: RabitFaceObject? = nil
+    @Previewable @State var feelingChild: FeelingObject? = nil
+    @Previewable @State var needsChild: NeedObject? = nil
+    
+    @Previewable @State var answerGame: FeelingObject? = nil
+    
+    @Previewable @State var child: Bool = false
+
+    HowNVCView(
+        observationParent: $observationParent,
+        feelingParent: $feelingParent,
+        needsParent: $needsParent,
+        observationChild: $observationChild,
+        feelingChild: $feelingChild,
+        needsChild: $needsChild,
+        answerGame: $answerGame,
+        child: $child
+    )
 }

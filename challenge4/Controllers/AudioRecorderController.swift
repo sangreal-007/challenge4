@@ -117,6 +117,22 @@ class AudioRecorderController: ObservableObject {
         }
     }
     
+    func getRecordingDuration(fileName: String) -> TimeInterval? {
+        let url = documentsDirectory().appendingPathComponent(fileName)
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            print("File does not exist: \(url.path)")
+            return nil
+        }
+        
+        do {
+            let audioPlayer = try AVAudioPlayer(contentsOf: url)
+            return audioPlayer.duration
+        } catch {
+            print("Failed to get duration: \(error)")
+            return nil
+        }
+    }
+
 //    // MARK: - Cleanup old recordings
 //    func cleanupOldRecordings(days: Int = 30, modelContext: ModelContext) {
 //        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date())!

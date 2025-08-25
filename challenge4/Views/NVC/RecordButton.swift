@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct RecordButton: View {
-    @Binding var feeling: FeelingObject?
+    @Binding var feelingParent: FeelingObject?
+    @Binding var feelingChild: FeelingObject?
+    @Binding var answerGame: FeelingObject?
+    @Binding var game: String
+    
+    @Binding var child: Bool
+    
     @StateObject private var recorderController = AudioRecorderController()
     
     var onNext: (() -> Void)? = nil
@@ -19,7 +25,13 @@ struct RecordButton: View {
                 if recorderController.isRecording {
                     if let filePath = recorderController.stopRecordingWithoutLimit() {
                         print("Recording saved at: \(filePath)")
-                        feeling = FeelingObject(audioFilePath: filePath)
+                        if game == "game" {
+                            answerGame = FeelingObject(name:"", AudioFilePath: filePath) //change the name empty string to the random thingy question
+                        } else if child{
+                            feelingChild = FeelingObject(name:"", AudioFilePath: filePath)
+                        } else {
+                            feelingParent = FeelingObject(name:"",AudioFilePath: filePath)
+                        }
                     }
                 } else {
                     recorderController.requestPermission {
@@ -58,12 +70,21 @@ struct RecordButton: View {
 }
 
 #Preview {
-    @Previewable @State var feeling: FeelingObject? = FeelingObject(audioFilePath: "")
-    @Previewable @State var isNextActive: Bool = false
-
-    RecordButton(feeling: $feeling, onNext: {
-        if feeling != nil {
-            isNextActive = true
+    @Previewable @State var feelingParent: FeelingObject? = nil
+    @Previewable @State var feelingChild: FeelingObject? = nil
+    @Previewable @State var answerGame: FeelingObject? = nil
+    @Previewable @State var game: String = ""
+    @Previewable @State var child: Bool = false
+    
+    RecordButton(
+        feelingParent: $feelingParent,
+        feelingChild: $feelingChild,
+        answerGame: $answerGame,
+        game: $game,
+        child: $child,
+        onNext: {
+            print("Next tapped!")
         }
-    })
+    )
 }
+

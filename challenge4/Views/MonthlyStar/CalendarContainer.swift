@@ -60,7 +60,6 @@ struct CalendarContainer: View {
                         ForEach(0..<7, id: \.self) { i in
                             if let date = (i < weekDays.count ? weekDays[i] : nil) {
                                 let dayNumber = calendar.component(.day, from: date)
-                                
                                 NavigationLink(destination: StarDetailView(selectedDate: date)) {
                                     ZStack {
                                         if isCompleted(date) {

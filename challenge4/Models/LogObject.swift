@@ -12,21 +12,39 @@ import SwiftData
 class LogObject {
     var id: UUID
     var date: Date
-    var observation: RabitFaceObject?
-    var feeling: FeelingObject?
-    var needs: NeedObject?
+    var observationParent: RabitFaceObject?
+    var feelingParent: FeelingObject?
+    var needsParent: NeedObject?
+    var observationChild: RabitFaceObject?
+    var feelingChild: FeelingObject?
+    var needsChild: NeedObject?
+    var answerGame: FeelingObject?
     
     init(
         id: UUID = UUID(),
         date: Date = Date(),
-        observation: RabitFaceObject? = nil,
-        feeling: FeelingObject? = nil,
-        needs: NeedObject? = nil
+        
+        observationParent: RabitFaceObject? = nil,
+        feelingParent: FeelingObject? = nil,
+        needsParent: NeedObject? = nil,
+        
+        observationChild: RabitFaceObject? = nil,
+        feelingChild: FeelingObject? = nil,
+        needsChild: NeedObject? = nil,
+        
+        answerGame: FeelingObject? = nil
     ) {
         self.id = id
         self.date = date
-        self.observation = observation
-        self.feeling = feeling
-        self.needs = needs
+        
+        self.observationParent = observationParent
+        self.feelingParent = feelingParent
+        self.needsParent = needsParent
+        
+        self.observationChild = observationChild
+        self.feelingChild = feelingChild
+        self.needsChild = needsChild
+        
+        self.answerGame = answerGame
     }
 }
