@@ -134,8 +134,9 @@ struct StarDetailView: View {
                     HStack {
                         BackButton()
                             .padding(.leading, 10)
-                        DatePicker(selectedDate: $selectedDate, onPreviousDay: goToPreviousDay, onNextDay: goToNextDay)
-                            .padding(.leading, -2)
+                            .offset(y: -20)
+                        DatePicker(selectedDate: $selectedDate, isCompleted: isCompleted, onPreviousDay: goToPreviousDay, onNextDay: goToNextDay)
+                            .padding(.leading, 7)
                         Spacer()
                     }
                     

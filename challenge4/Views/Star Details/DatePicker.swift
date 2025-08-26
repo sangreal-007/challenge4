@@ -11,9 +11,11 @@ struct DatePicker: View {
     @Binding var selectedDate: Date
     let onPreviousDay: () -> Void
     let onNextDay: () -> Void
+    let isCompleted: Bool
     
-    init(selectedDate: Binding<Date>, onPreviousDay: @escaping () -> Void = {}, onNextDay: @escaping () -> Void = {}) {
+    init(selectedDate: Binding<Date>, isCompleted: Bool = false, onPreviousDay: @escaping () -> Void = {}, onNextDay: @escaping () -> Void = {}) {
         _selectedDate = selectedDate
+        self.isCompleted = isCompleted
         self.onPreviousDay = onPreviousDay
         self.onNextDay = onNextDay
     }
@@ -26,7 +28,7 @@ struct DatePicker: View {
             }) {
                 Image(systemName: "chevron.left")
                     .font(.title2)
-                    .foregroundColor(.white)
+                    .foregroundColor(isCompleted ? .black : .white)
 //                    .fontWeight(.heavy)
             }
 
@@ -36,11 +38,11 @@ struct DatePicker: View {
                 VStack(spacing: 2) {
                     Text(dateString)
                         .font(.title)
-                        .foregroundColor(.white)
+                        .foregroundColor(isCompleted ? .black : .white)
                         .fontWeight(.heavy)
                     Text(dayString)
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(isCompleted ? .black : .white)
                         .fontWeight(.light)
                 }
                 // Hidden placeholder: ensures consistent width for longest possible strings
@@ -61,7 +63,7 @@ struct DatePicker: View {
             }) {
                 Image(systemName: "chevron.right")
                     .font(.title2)
-                    .foregroundColor(isAtPresentDay ? .gray : .white)
+                    .foregroundColor(isAtPresentDay ? .gray : (isCompleted ? .black : .white))
 //                    .fontWeight(.heavy)
             }
             .disabled(isAtPresentDay)
@@ -92,5 +94,5 @@ struct DatePicker: View {
 
 #Preview {
     @State var previewDate = Date()
-    return DatePicker(selectedDate: $previewDate, onPreviousDay: {}, onNextDay: {})
+    return DatePicker(selectedDate: $previewDate, isCompleted: false, onPreviousDay: {}, onNextDay: {}).background(.blue)
 }
