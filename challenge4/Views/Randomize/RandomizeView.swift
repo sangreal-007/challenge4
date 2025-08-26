@@ -94,7 +94,7 @@ struct RandomizeView: View {
             }
             .navigationDestination(isPresented: $isNextActive) {
                 // Change into the memory star page
-                CalendarView()
+                MemoryStarView()
 //                LogListPage()
                 
             }

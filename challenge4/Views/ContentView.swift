@@ -30,16 +30,18 @@ struct ContentView: View {
     @State private var answerGame: FeelingObject? = nil
     
     var body: some View {
-        HowNVCView(
-            observationParent: $observationParent,
-            feelingParent: $feelingParent,
-            needsParent: $needsParent,
-            observationChild: $observationChild,
-            feelingChild: $feelingChild,
-            needsChild: $needsChild,
-            answerGame: $answerGame,
-            child: $child
-        )
+        HomeView()
+        
+        // HowNVCView(
+        //     observationParent: $observationParent,
+        //     feelingParent: $feelingParent,
+        //     needsParent: $needsParent,
+        //     observationChild: $observationChild,
+        //     feelingChild: $feelingChild,
+        //     needsChild: $needsChild,
+        //     answerGame: $answerGame,
+        //     child: $child
+        // )
             .onAppear {
                 setupBackgroundMusic()
             }
