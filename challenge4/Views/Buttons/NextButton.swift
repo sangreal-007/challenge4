@@ -2,22 +2,31 @@ import SwiftUI
 
 // MARK: - Next Button
 struct NextButton: View {
-    let isLast: Bool
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
             ZStack {
                 Circle()
-                    .fill(Color(hex: 0x3E3BC8))
+                    .fill(.buttonBlue)
                     .frame(width: 69, height: 69)
-                    .shadow(color: Color(hex: 0x2B28B2), radius: 0, x: 0, y: 8)
+                    .shadow(color: Color.buttonBlueDropShadow, radius: 0, x: 0, y: 8)
                 
-                Image(systemName: isLast ? "checkmark" : "chevron.right")
+                Image(systemName: "chevron.right")
                     .font(.system(size: 22, weight: .bold))
                     .foregroundColor(.white)
             }
         }
-        .buttonStyle(ScaleButtonStyle())
+        .buttonStyle(BounceButtonStyle())
     }
+}
+
+// MARK: - Preview
+#Preview {
+    VStack(spacing: 20) {
+        NextButton(action: {
+            
+        })
+    }
+    .previewLayout(.sizeThatFits)
 }

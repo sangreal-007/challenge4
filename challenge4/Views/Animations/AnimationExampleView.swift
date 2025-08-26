@@ -14,7 +14,7 @@ struct AnimationExampleView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                ParentsTurnCard()
+                TurnCard(isParent: true)
                     .offset(x: -70, y: -150)
                 
                 // Background content (always visible)

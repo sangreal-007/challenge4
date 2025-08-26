@@ -134,15 +134,18 @@ struct NeedCard: View {
                         .shadow(color: .checkmarkDropShadow.opacity(1), radius: 0, x: 0, y: 8)
                 }
                 .offset(x: 140, y: -110)
+                .buttonStyle(BounceButtonStyle())
             }
         }
     }
 }
 
-//#Preview {
-//    @Previewable @State var selectedNeeds: [String] = [""]
-//    @Previewable @State var customNeed: String = ""
-//    @Previewable @State var needs: NeedObject? = NeedObject(needs: [""])
-//    
-//    NeedCard(selectedNeeds: $selectedNeeds, customNeed: $customNeed, chosenNeeds: $needs)
-//}
+#Preview {
+    @Previewable @State var selectedNeeds: [String] = []
+    @Previewable @State var customNeed: String = ""
+    @Previewable @State var child: Bool = false
+    @Previewable @State var needChild: NeedObject? = nil
+    @Previewable @State var needParent: NeedObject? = nil
+    
+    NeedCard(selectedNeeds: $selectedNeeds, customNeed: $customNeed, child: $child, needChild: $needChild, needParent: $needParent)
+}

@@ -47,7 +47,7 @@ struct RecordButton: View {
                     .background(recorderController.isRecording ? Color.white : Color.microphone)
                     .clipShape(Circle())
                     .shadow(color: .microphoneDropShadow.opacity(1), radius: 0, x: 0, y: 8)
-            }
+            }.buttonStyle(BounceButtonStyle())
 
             HStack {
                 Spacer()
@@ -61,7 +61,7 @@ struct RecordButton: View {
                         .background(Color.checkmark)
                         .clipShape(Circle())
                         .shadow(color: .checkmarkDropShadow.opacity(1), radius: 0, x: 0, y: 8)
-                }
+                }.buttonStyle(BounceButtonStyle())
             }
             .padding(.horizontal, 70)
             HStack {
@@ -77,7 +77,7 @@ struct RecordButton: View {
                                 .background(Color.trash)
                                 .clipShape(Circle())
                                 .shadow(color: .trashDropShadow.opacity(1), radius: 0, x: 0, y: 8)
-                        }
+                        }.buttonStyle(BounceButtonStyle())
                         Spacer()
                     }
                     .padding(.horizontal, 70)

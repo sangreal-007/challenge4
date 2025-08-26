@@ -7,19 +7,6 @@
 
 import SwiftUI
 
-/// A button style that adds a “bouncy” animation when the button is pressed.
-struct BounceButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            // Scale down when pressed and animate with a spring effect
-            .scaleEffect(configuration.isPressed ? 0.85 : 1.0)
-            .animation(
-                .spring(response: 0.3, dampingFraction: 0.5),
-                value: configuration.isPressed
-            )
-    }
-}
-
 struct BackButton: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -39,6 +26,7 @@ struct BackButton: View {
         }
         // Apply the custom bouncy button style
         .buttonStyle(BounceButtonStyle())
+        .offset(y: 20)
     }
 }
 

@@ -7,9 +7,12 @@
 
 import SwiftUI
 import SwiftData
+import AVFoundation
 
 @main
 struct challenge4App: App {
+    @State private var backgroundAudioPlayer: AVAudioPlayer?
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,

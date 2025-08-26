@@ -34,14 +34,16 @@ struct NeedNVCView: View {
                 VStack {
                     VStack{
                         HStack(spacing: 0) {
-                            Text("How do you feel? ")
+                            Text("What do you need? ")
                                 .font(.largeTitle)
+                                .fontDesign(.rounded)
                                 .foregroundColor(.white)
                             Button(action: {
                                 print("Megaphone tapped!")
                             }) {
                                 Image(systemName: "speaker.wave.3.fill")
                                     .font(.largeTitle)
+                                    .fontDesign(.rounded)
                                     .foregroundColor(.white)
                             }
                             .buttonStyle(.plain)
@@ -65,7 +67,10 @@ struct NeedNVCView: View {
                                     child = !child
                                     print("Child value: ")
                                     print(child)
-                                    isNextActive = true
+                                    // Add 1-second delay to allow button animation and sound to complete
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                        isNextActive = true
+                                    }
                                 }
                             )
                             .offset(x: 0, y: 270)

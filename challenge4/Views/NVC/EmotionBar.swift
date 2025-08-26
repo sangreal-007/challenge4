@@ -36,6 +36,7 @@ struct EmotionBar: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 80, height: 80)
+                                    .opacity(selectedObservation?.name == face.name ? 1.0 : 0.5)
                                 Text(face.name)
                                     .font(.headline)
                                     .foregroundColor(.white)
@@ -79,6 +80,7 @@ struct EmotionBar: View {
                 .offset(x: 140, y: -80)
                 .transition(.opacity)
                 .animation(.easeInOut, value: selectedObservation?.name)
+                .buttonStyle(BounceButtonStyle())
             }
         }
     }

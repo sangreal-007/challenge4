@@ -36,11 +36,13 @@ struct WhyNVCView:View {
                     VStack{
                         Text("Why do you feel")
                             .font(.largeTitle)
+                            .fontDesign(.rounded)
                             .multilineTextAlignment(.center)
                             .foregroundColor(.white)
                         HStack(spacing: 0) {
                             Text("that way? ")
                                 .font(.largeTitle)
+                                .fontDesign(.rounded)
                                 .foregroundColor(.white)
                             Button(action: {
                                 print("Megaphone tapped!") // change it into voice over
@@ -59,7 +61,10 @@ struct WhyNVCView:View {
                         RabbitsTalkingView()
                         
                         RecordButton(feelingParent: $feelingParent, feelingChild: $feelingChild, answerGame: $answerGame ,game: $empty, child: $child, onNext: {
-                            isNextActive = true
+                            // Add 1-second delay to allow button animation and sound to complete
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                isNextActive = true
+                            }
                         })
                             .offset(x: 0, y:270)
 

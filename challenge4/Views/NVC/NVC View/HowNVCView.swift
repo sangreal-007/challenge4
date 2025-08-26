@@ -39,7 +39,7 @@ struct HowNVCView: View {
     
     @State private var isNextActive: Bool = false
     @State private var ellipseScale: CGFloat = 10.0 // Animation state for parent's turn
-    @State private var showParentCard: Bool = false // Controls ParentsTurnCard visibility
+    @State private var showTurnCard: Bool = false // Controls TurnCard visibility
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -70,13 +70,12 @@ struct HowNVCView: View {
                         .multilineTextAlignment(.center)
                     }
                     ZStack {
-                        // Parent's Turn Card - positioned above RabbitsTalkingView
-                        if !child {
-                            ParentsTurnCard()
-                                .offset(x: -70, y: -140)
-                                .opacity(showParentCard ? 1.0 : 0.0)
-                                .animation(.easeInOut(duration: 1.0), value: showParentCard)
-                        }
+                        // Turn Card - positioned above RabbitsTalkingView
+                        TurnCard(isParent: !child)
+                             .offset(x: child ? 70 : -70,
+                                     y: child ? -120 : -140)
+                             .opacity(showTurnCard ? 1.0 : 0.0)
+                             .animation(.easeInOut(duration: 1.0), value: showTurnCard)
                         
                         RabbitsTalkingView()
                         
@@ -85,10 +84,13 @@ struct HowNVCView: View {
                             observationChild: $observationChild,
                             child: $child,
                             onNext: {
-                                if !child && observationParent != nil {
-                                    isNextActive = true
-                                } else if child && observationChild != nil {
-                                    isNextActive = true
+                                // Add 1-second delay to allow button animation and sound to complete
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    if !child && observationParent != nil {
+                                        isNextActive = true
+                                    } else if child && observationChild != nil {
+                                        isNextActive = true
+                                    }
                                 }
                             }
                         )
@@ -102,27 +104,27 @@ struct HowNVCView: View {
                 // Black tint with animated ellipse cutout
                 Rectangle()
                     .fill(Color.black.opacity(0.8))
-                    .ignoresSafeArea(.all)
+                    .ignoresSafeArea(.all, edges: .all)
                     .allowsHitTesting(false)
                     .mask {
                         Rectangle()
-                            .ignoresSafeArea(.all)
+                            .ignoresSafeArea(.all, edges: .all)
                             .overlay {
                                 Ellipse()
-                                    .frame(width: 240 * ellipseScale, height: 300 * ellipseScale)
-                                    .offset(x: -70, y: 10)
+                                    .frame(width: (child ? 200 : 240) * ellipseScale, height: (child ? 250 : 300) * ellipseScale)
+                                    .offset(x: child ? 70 : -70, y: child ? 20 : 10)
                                     .blendMode(.destinationOut)
                             }
                     }
                 
                 // Invisible overlay for tap gesture to skip animation
-                if !child && ellipseScale != 10.0 {
+                if ellipseScale != 10.0 {
                     Rectangle()
                         .fill(Color.clear)
                         .ignoresSafeArea(.all)
                         .onTapGesture {
                             // Skip animation - hide card and expand ellipse
-                            showParentCard = false
+                            showTurnCard = false
                             withAnimation(.easeInOut(duration: 2.0)) {
                                 ellipseScale = 10.0
                             }
@@ -130,22 +132,21 @@ struct HowNVCView: View {
                 }
             }
             .onAppear {
-                if !child {
+                // Animation works for both parent and child turns
+                withAnimation(.easeInOut(duration: 2.0)) {
+                    ellipseScale = 1.0
+                }
+                
+                // Show TurnCard after 1.5 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    showTurnCard = true
+                }
+                
+                // Auto-reverse after 5 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                    showTurnCard = false
                     withAnimation(.easeInOut(duration: 2.0)) {
-                        ellipseScale = 1.0
-                    }
-                    
-                    // Show ParentsTurnCard after 1.5 seconds
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        showParentCard = true
-                    }
-                    
-                    // Auto-reverse after 5 seconds
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                        showParentCard = false
-                        withAnimation(.easeInOut(duration: 2.0)) {
-                            ellipseScale = 10.0
-                        }
+                        ellipseScale = 10.0
                     }
                 }
             }
