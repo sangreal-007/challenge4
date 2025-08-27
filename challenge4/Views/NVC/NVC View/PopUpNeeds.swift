@@ -8,12 +8,19 @@
 import SwiftUI
 
 struct PopUpNeeds: View {
+    @Binding var isPresented: Bool
     @State private var selectedNeeds: [String] = []
     
     let needs = ["Rest", "Cooperation", "Understanding", "Focus", "Support"]
     
     var body: some View {
-        VStack(spacing: 10) {
+        if isPresented {
+            ZStack {
+                // Background dimmed
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea(.all, edges: .all)
+                
+                VStack(spacing: 10) {
             // Header
             HStack {
                 Text("Needs")
@@ -27,7 +34,7 @@ struct PopUpNeeds: View {
                 Spacer()
                 
                 Button(action: {
-                    // Close action
+                    withAnimation { isPresented = false }
                 }) {
                     Image(systemName: "xmark")
                         .font(.title3).bold()
@@ -57,6 +64,7 @@ struct PopUpNeeds: View {
             
             // Done Button
             Button(action: {
+                withAnimation { isPresented = false }
             }) {
                 HStack {
                     Text("Done")
@@ -71,11 +79,16 @@ struct PopUpNeeds: View {
                 .shadow(color: .checkmarkDropShadow.opacity(1), radius: 0, x: 0, y: 6)
             }
             .padding(.bottom, 25)
+                }
+                .padding(.top, 20)
+                .background(Color.popUpBackground)
+                .cornerRadius(20)
+                .padding()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
+            .transition(.opacity)
         }
-        .padding(.top, 20)
-        .background(Color.popUpBackground)
-        .cornerRadius(20)
-        .padding()
     }
     
     private func toggleNeed(_ need: String) {
@@ -136,5 +149,10 @@ struct FlowLayout<Data: RandomAccessCollection, Content: View, ID: Hashable>: Vi
 }
 
 #Preview {
-    PopUpNeeds()
+    StatefulPreviewWrapper(true) { isPresented in
+        ZStack {
+            Color.gray.ignoresSafeArea()
+            PopUpNeeds(isPresented: isPresented)
+        }
+    }
 }

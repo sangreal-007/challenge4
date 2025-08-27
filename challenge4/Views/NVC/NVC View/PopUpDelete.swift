@@ -14,10 +14,9 @@ struct PopUpDelete: View {
     var body: some View {
         if isPresented {
             ZStack {
-
-//                // Background dimmed
+               // Background dimmed
                 Color.black.opacity(0.5)
-                    .ignoresSafeArea()
+                    .ignoresSafeArea(.all, edges: .all)
                 
                 VStack(spacing: 20) {
                     // Title

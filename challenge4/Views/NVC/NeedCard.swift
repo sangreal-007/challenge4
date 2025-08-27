@@ -16,6 +16,8 @@ struct NeedCard: View {
     @Binding var needParent: NeedObject?
     var onNext: (() -> Void)? = nil
     
+    @State private var showNeedsPopup = false
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -26,7 +28,7 @@ struct NeedCard: View {
                         .foregroundColor(.white)
                     
                     Button(action: {
-                        print("Button tapped")
+                        showNeedsPopup = true
                     }) {
                         Image(systemName: "list.bullet")
                             .font(.title)
@@ -139,6 +141,9 @@ struct NeedCard: View {
                 .offset(x: 140, y: -110)
                 .buttonStyle(BounceButtonStyle())
             }
+            
+            // PopUp overlay
+            PopUpNeeds(isPresented: $showNeedsPopup)
         }
     }
 }
