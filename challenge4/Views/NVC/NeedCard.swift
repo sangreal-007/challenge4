@@ -17,6 +17,7 @@ struct NeedCard: View {
     var onNext: (() -> Void)? = nil
     
     @State private var showNeedsPopup = false
+    @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
         ZStack {
@@ -71,6 +72,7 @@ struct NeedCard: View {
                         )
                         .font(.title3) // bigger font
                         .foregroundColor(.white)
+                        .focused($isTextFieldFocused)
 
                         Button(action: {
                             customNeed = ""
@@ -144,6 +146,10 @@ struct NeedCard: View {
             
             // PopUp overlay
             PopUpNeeds(isPresented: $showNeedsPopup)
+        }
+        .onTapGesture {
+            // Dismiss keyboard when tapping outside
+            isTextFieldFocused = false
         }
     }
 }
