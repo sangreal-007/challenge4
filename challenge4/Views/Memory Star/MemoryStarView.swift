@@ -27,7 +27,7 @@ struct MemoryStarView: View {
                     .ignoresSafeArea()
                     .onAppear {
                         withAnimation(.linear(duration: 5).repeatForever(autoreverses: false)) {
-                            offsetAmount = 500 // Adjust as needed
+                            offsetAmount = 500 
                         }
                     }
                 
@@ -56,7 +56,7 @@ struct MemoryStarView: View {
                 HStack(spacing:-50){
                     ZStack {
                         RabbitStarView()
-                            .frame(maxWidth: 393, maxHeight: 552, alignment: .bottom)
+                            .frame(maxWidth: 393, maxHeight: 702, alignment: .bottom)
 
                     }
                     
@@ -116,3 +116,4 @@ struct MemoryStarView: View {
 #Preview {
     MemoryStarView()
 }
+

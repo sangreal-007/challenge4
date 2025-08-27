@@ -29,18 +29,22 @@ class AudioRecorderController: ObservableObject {
     
     // MARK: - Permission
     func requestPermission(completion: @escaping () -> Void) {
-        AVAudioSession.sharedInstance().requestRecordPermission { allowed in
-            DispatchQueue.main.async {
-                if allowed {
-                    print("Permission granted")
-                    completion()
-                } else {
-                    print("Permission denied")
+        AVAudioSession.sharedInstance().requestRecordPermission { granted in
+            if granted {
+                DispatchQueue.main.async {
+                    // Configure session for mixing with background music
+                    let session = AVAudioSession.sharedInstance()
+                    do {
+                        try session.setCategory(.playAndRecord, options: [.defaultToSpeaker, .mixWithOthers])
+                        try session.setActive(true)
+                        completion()
+                    } catch {
+                        print("⚠️ Failed to setup audio session: \(error)")
+                    }
                 }
             }
         }
     }
-    
     // MARK: - File paths
     private func documentsDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -116,7 +120,16 @@ class AudioRecorderController: ObservableObject {
             print("Playback failed: \(error)")
         }
     }
-    
+    // MARK: - Stop audio playback
+    func stopPlayback() {
+        if let player = player, player.isPlaying {
+            player.stop()
+            print("Playback stopped")
+        } else {
+            print("No audio is currently playing")
+        }
+    }
+
     func getRecordingDuration(fileName: String) -> TimeInterval? {
         let url = documentsDirectory().appendingPathComponent(fileName)
         guard FileManager.default.fileExists(atPath: url.path) else {

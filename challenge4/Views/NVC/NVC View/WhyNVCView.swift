@@ -27,44 +27,44 @@ struct WhyNVCView:View {
     let game = ""
     
     @Environment(\.dismiss) private var dismiss
+    
+    var audioName : String = "Why_do_you_feel_that_way"
+    
     var body: some View {
         NavigationStack{
             ZStack{
                 Color.background
                     .ignoresSafeArea()
                 VStack {
-                    VStack{
-                        Text("Why do you feel")
-                            .font(.largeTitle)
-                            .fontDesign(.rounded)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.white)
-                        HStack(spacing: 0) {
-                            Text("that way? ")
+                    
+                    ZStack{
+                        VStack{
+                            Text("Why do you feel")
                                 .font(.largeTitle)
-                                .fontDesign(.rounded)
+                                .multilineTextAlignment(.center)
                                 .foregroundColor(.white)
-                            Button(action: {
-                                print("Megaphone tapped!") // change it into voice over
-                                print("Megaphone tapped!") // change it into voice over
-                            }) {
-                                Image(systemName: "speaker.wave.3.fill")
+                            HStack(spacing: 0) {
+                                Text("that way? ")
                                     .font(.largeTitle)
                                     .foregroundColor(.white)
+                                Button {
+                                    AudioPlayer.shared.playAudio(named: audioName)
+                                } label: {
+                                    Image(systemName: "speaker.wave.3.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                }
+                                .buttonStyle(.plain)
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity)
+                            .multilineTextAlignment(.center)
                         }
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                    }
-                    ZStack{
+                        .offset(x: 0, y:-200)
                         RabbitsTalkingView()
-                        
-                        RecordButton(feelingParent: $feelingParent, feelingChild: $feelingChild, answerGame: $answerGame ,game: $empty, child: $child, onNext: {
-                            // Add 1-second delay to allow button animation and sound to complete
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                isNextActive = true
-                            }
+                        .offset(x: 0, y:50)
+                        RecordButton(feelingParent: $feelingParent, feelingChild: $feelingChild, answerGame: $answerGame ,game: $empty,gameName: $empty, child: $child, onNext: {
+                            isNextActive = true
                         })
                             .offset(x: 0, y:270)
 

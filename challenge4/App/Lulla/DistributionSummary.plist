@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Lulla.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>buildNumber</key>
+			<string>1</string>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>934E1964C0CCCD11240C437B9F528B23ED844BB1</string>
+				<key>dateExpires</key>
+				<string>27/08/26</string>
+				<key>type</key>
+				<string>Apple Distribution</string>
+			</dict>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>RXK8KL3HX2.binb.idserve.net.challenge4</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>RXK8KL3HX2</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>Lulla.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>e08c7a81-e37d-4fe4-b70a-00493d90774a</string>
+				<key>dateExpires</key>
+				<string>27/08/26</string>
+				<key>name</key>
+				<string>iOS Team Ad Hoc Provisioning Profile: binb.idserve.net.challenge4</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>RXK8KL3HX2</string>
+				<key>name</key>
+				<string>M Dwiva Arya Erlangga</string>
+			</dict>
+			<key>versionNumber</key>
+			<string>1.0</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -8,46 +8,45 @@
 import SwiftUI
 
 struct ProgressBarView: View {
+    var daysCount: Int
+    var daysTotal: Int
     @State private var navigateToCalendar = false
-    @State private var daysCount : Int = 7
-    @State private var daysTotal: Int = 30
     
     var body: some View {
         Button(action: {
             navigateToCalendar = true
         }) {
-            ZStack{
+            ZStack {
                 Image("ProgressBar")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 177, height: 65)
+                    .frame(width: 127, height: 65)
                 
                 HStack(spacing: 0) {
-                    Text ("\(daysCount)")
+                    Text("\(daysCount)")
                         .font(.title)
                         .fontDesign(.rounded)
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
+                    
                     Text("/\(daysTotal)")
                         .font(.title)
                         .fontDesign(.rounded)
                         .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                        .foregroundStyle(
-                            .white
-                                .opacity(0.3))
-                    
-                }.padding(.leading, 40)
-                    .padding(.bottom, 7)
+                        .foregroundStyle(.white.opacity(0.3))
+                }
+                .padding(.leading, 30)
+                .padding(.bottom, 7)
             }
-        }.buttonStyle(BounceButtonStyle())
-            .navigationDestination(isPresented: $navigateToCalendar) {
-                CalendarView()
-            }
+        }
+        .buttonStyle(BounceButtonStyle())
+        .navigationDestination(isPresented: $navigateToCalendar) {
+            CalendarView()
+        }
     }
 }
 
 
 #Preview {
-    ProgressBarView()
+    ProgressBarView(daysCount: 0, daysTotal: 31)
 }

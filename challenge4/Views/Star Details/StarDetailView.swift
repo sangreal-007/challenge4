@@ -60,11 +60,13 @@ struct StarDetailView: View {
     
     // Check if there are logs for the selected date
     private var isCompleted: Bool {
-        return logs.contains { log in
+        let logController = LogController(modelContext: modelContext)
+        let parentLogs = logController.fetchLogs(role: .parent)
+        return parentLogs.contains { log in
             calendar.isDate(log.date, inSameDayAs: selectedDate)
         }
     }
-    
+
     // Check if selected date is today or later (prevent future navigation)
     private var isAtPresentDay: Bool {
         return calendar.isDate(selectedDate, inSameDayAs: Date()) || selectedDate > Date()
@@ -134,9 +136,9 @@ struct StarDetailView: View {
                     HStack {
                         BackButton()
                             .padding(.leading, 10)
-                            .offset(y: -20)
-                        DatePicker(selectedDate: $selectedDate, isCompleted: isCompleted, onPreviousDay: goToPreviousDay, onNextDay: goToNextDay)
-                            .padding(.leading, 7)
+                        DatePicker(selectedDate: $selectedDate, onPreviousDay: goToPreviousDay, onNextDay: goToNextDay)
+                            .padding(.leading, 40)
+                            .offset(x : 0, y: 20)
                         Spacer()
                     }
                     
@@ -157,9 +159,8 @@ struct StarDetailView: View {
                                     if let feeling = log.feelingParent {
                                         Cards(state: .why, titleText: "Why I Feel That Way", audioPathFeeling: feeling.AudioFilePath)
                                     }
-                                    
                                     if let needs = log.needsParent {
-                                        Cards(state: .need, titleText: "What I Need", needs: needs.needs)
+                                        Cards(state: .need, titleText: "What I Need", needs: needs)
                                     }
 
                                 case .child:
@@ -172,7 +173,7 @@ struct StarDetailView: View {
                                     }
                                     
                                     if let needs = log.needsChild {
-                                        Cards(state: .need, titleText: "What I Need", needs: needs.needs)
+                                        Cards(state: .need, titleText: "What I Need", needs: needs)
                                     }
                                 case .games:
                                     if log.answerGame != nil {
@@ -209,7 +210,7 @@ struct StarDetailView: View {
                 fetchLogs()
             }
         }
-        .onChange(of: selectedTab) { newTab in
+        .onChange(of: selectedTab) { _, _ in
             fetchLogs()
         }
         .gesture(

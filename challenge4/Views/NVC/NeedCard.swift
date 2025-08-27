@@ -110,19 +110,22 @@ struct NeedCard: View {
                         selectedNeeds.append(customNeed)
                         customNeed = ""
                     }
+                    let mappedNeeds = selectedNeeds // already [String]
+
                     if child {
                         if needChild == nil {
-                            needChild = NeedObject(needs: selectedNeeds)
+                            needChild = NeedObject(needs: mappedNeeds)
                         } else {
-                            needChild?.needs = selectedNeeds
+                            needChild?.needs = mappedNeeds.map { NeedObject.Need(text: $0) }
                         }
                     } else {
                         if needParent == nil {
-                            needParent = NeedObject(needs: selectedNeeds)
+                            needParent = NeedObject(needs: mappedNeeds)
                         } else {
-                            needParent?.needs = selectedNeeds
+                            needParent?.needs = mappedNeeds.map { NeedObject.Need(text: $0) }
                         }
                     }
+
                     onNext?()
                 }) {
                     Image(systemName: "checkmark")

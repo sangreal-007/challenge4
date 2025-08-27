@@ -23,30 +23,53 @@ class LogController: ObservableObject {
     }
     
     // MARK: - LogObject
-    func addLog(role: LogRole, observation: RabitFaceObject? = nil, feeling: FeelingObject? = nil, needs: NeedObject? = nil) {
-        let log: LogObject
-        switch role {
-        case .parent:
-            log = LogObject(
-                observationParent: observation,
-                feelingParent: feeling,
-                needsParent: needs
-            )
-        case .child:
-            log = LogObject(
-                observationChild: observation,
-                feelingChild: feeling,
-                needsChild: needs
-            )
-        case .game:
-            log = LogObject(
-                answerGame: feeling
-            )
-        }
+//    func addLog(role: LogRole, observation: RabitFaceObject? = nil, feeling: FeelingObject? = nil, needs: NeedObject? = nil) {
+//        let log: LogObject
+//        switch role {
+//        case .parent:
+//            log = LogObject(
+//                observationParent: observation,
+//                feelingParent: feeling,
+//                needsParent: needs
+//            )
+//        case .child:
+//            log = LogObject(
+//                observationChild: observation,
+//                feelingChild: feeling,
+//                needsChild: needs
+//            )
+//        case .game:
+//            log = LogObject(
+//                answerGame: feeling
+//            )
+//        }
+//        
+//        modelContext.insert(log)
+//        save()
+//    }
+    func addLog(
+        observationParent: RabitFaceObject? = nil,
+        feelingParent: FeelingObject? = nil,
+        needsParent: NeedObject? = nil,
+        observationChild: RabitFaceObject? = nil,
+        feelingChild: FeelingObject? = nil,
+        needsChild: NeedObject? = nil,
+        answerGame: FeelingObject? = nil
+    ) {
+        let log = LogObject(
+            observationParent: observationParent,
+            feelingParent: feelingParent,
+            needsParent: needsParent,
+            observationChild: observationChild,
+            feelingChild: feelingChild,
+            needsChild: needsChild,
+            answerGame: answerGame
+        )
         
         modelContext.insert(log)
         save()
     }
+
     
     func fetchLogs(role: LogRole) -> [LogObject] {
         let descriptor = FetchDescriptor<LogObject>(

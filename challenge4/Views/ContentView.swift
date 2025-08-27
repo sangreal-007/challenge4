@@ -16,60 +16,13 @@ struct ContentView: View {
     @Query private var items: [Item]
     @State private var audioPlayer: AVAudioPlayer?
     
-    // MARK: - Parent
-    @State private var observationParent: RabitFaceObject? = nil
-    @State private var feelingParent: FeelingObject? = nil
-    @State private var needsParent: NeedObject? = nil
-    
-    // MARK: - Child
-    @State private var observationChild: RabitFaceObject? = nil
-    @State private var feelingChild: FeelingObject? = nil
-    @State private var needsChild: NeedObject? = nil
-
-    // MARK: - Game
-    @State private var answerGame: FeelingObject? = nil
-    
     var body: some View {
         HomeView()
-        
-        // HowNVCView(
-        //     observationParent: $observationParent,
-        //     feelingParent: $feelingParent,
-        //     needsParent: $needsParent,
-        //     observationChild: $observationChild,
-        //     feelingChild: $feelingChild,
-        //     needsChild: $needsChild,
-        //     answerGame: $answerGame,
-        //     child: $child
-        // )
             .onAppear {
-                setupBackgroundMusic()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    setupBackgroundMusic()
+                }
             }
-//        NavigationSplitView {
-//            List {
-//                ForEach(items) { item in
-//                    NavigationLink {
-//                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-//                    } label: {
-//                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-//                    }
-//                }
-//                .onDelete(perform: deleteItems)
-//            }
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    EditButton()
-//                }
-//                ToolbarItem {
-//                    Button(action: addItem) {
-//                        Label("Add Item", systemImage: "plus")
-//                    }
-//                }
-//            }
-//        } detail: {
-//            Text("Select an item")
-//        }
-        
     }
 
     private func addItem() {
@@ -92,16 +45,17 @@ struct ContentView: View {
             print("Could not find background music file")
             return
         }
-        
+
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.numberOfLoops = -1 // Loop indefinitely
-            audioPlayer?.volume = 0.3 // Set volume to 30%
-            audioPlayer?.play()
+            BackgroundMusicPlayer.shared.player = try AVAudioPlayer(contentsOf: url)
+            BackgroundMusicPlayer.shared.player?.numberOfLoops = -1
+            BackgroundMusicPlayer.shared.player?.volume = 0.1
+            BackgroundMusicPlayer.shared.player?.play()
         } catch {
             print("Error playing background music: \(error)")
         }
     }
+
 }
 
 #Preview {

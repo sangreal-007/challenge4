@@ -26,6 +26,9 @@ struct NeedNVCView: View {
     @State private var isNextActive: Bool = false
     
     @Environment(\.dismiss) private var dismiss
+    
+    var audioName : String = "What_do_you_need"
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -38,12 +41,11 @@ struct NeedNVCView: View {
                                 .font(.largeTitle)
                                 .fontDesign(.rounded)
                                 .foregroundColor(.white)
-                            Button(action: {
-                                print("Megaphone tapped!")
-                            }) {
+                            Button {
+                                AudioPlayer.shared.playAudio(named: audioName)
+                            } label: {
                                 Image(systemName: "speaker.wave.3.fill")
-                                    .font(.largeTitle)
-                                    .fontDesign(.rounded)
+                                    .font(.title2)
                                     .foregroundColor(.white)
                             }
                             .buttonStyle(.plain)
@@ -73,7 +75,7 @@ struct NeedNVCView: View {
                                     }
                                 }
                             )
-                            .offset(x: 0, y: 270)
+                            .offset(x: 0, y: 250)
                         }
                     }
                     .navigationDestination(isPresented: $isNextActive) {

@@ -15,7 +15,7 @@ struct PopUpDelete: View {
         if isPresented {
             ZStack {
 
-                // Background dimmed
+//                // Background dimmed
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
                 
@@ -70,6 +70,9 @@ struct PopUpDelete: View {
                 .cornerRadius(20)
                 .shadow(radius: 10)
             }
+            .offset(x: 0, y: -250)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
             .transition(.opacity)
         }
     }

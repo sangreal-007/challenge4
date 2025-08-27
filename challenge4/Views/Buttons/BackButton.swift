@@ -18,7 +18,7 @@ struct BackButton: View {
                 .font(.largeTitle)
                 .foregroundColor(.white)
                 .fontWeight(.heavy)
-                .padding(24)
+                .padding(14)
                 .background(
                     Circle()
                         .fill(Color("EmotionBarColorDropShadow"))

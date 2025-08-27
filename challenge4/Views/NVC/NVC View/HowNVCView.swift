@@ -42,6 +42,8 @@ struct HowNVCView: View {
     @State private var showTurnCard: Bool = false // Controls TurnCard visibility
     @Environment(\.dismiss) private var dismiss
     
+    var audioName : String = "How_do_you_feel_today"
+    
     var body: some View {
         NavigationStack{
             ZStack{
@@ -57,14 +59,15 @@ struct HowNVCView: View {
                             Text("today? ")
                                 .font(.largeTitle)
                                 .foregroundColor(.white)
-                            Button(action: {
-                                print("Megaphone tapped!") // change it into the voice over
-                            }) {
+                            Button {
+                                AudioPlayer.shared.playAudio(named: audioName)
+                            } label: {
                                 Image(systemName: "speaker.wave.3.fill")
-                                    .font(.largeTitle)
+                                    .font(.title2)
                                     .foregroundColor(.white)
                             }
                             .buttonStyle(.plain)
+                            
                         }
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
@@ -95,7 +98,7 @@ struct HowNVCView: View {
                             }
                         )
                         
-                        .offset(x: 0, y: 290)
+                        .offset(x: 0, y: 270)
                     }
                 }
                 

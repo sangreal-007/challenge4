@@ -38,7 +38,7 @@ struct CalendarView: View {
     
     // --- Fetch logs when view appears or month changes ---
     private func fetchLogs() {
-        let logController = LogController(modelContext: modelContext)
+        _ = LogController(modelContext: modelContext)
         
         // Fetch *all logs* regardless of role
         let descriptor = FetchDescriptor<LogObject>(
@@ -80,7 +80,20 @@ struct CalendarView: View {
             }
         }
     }
-    
+    private var currentMonthDaysCount: Int {
+        calendar.range(of: .day, in: .month, for: currentDate)?.count ?? 30
+    }
+
+    private var completedDaysCount: Int {
+        let monthRange = calendar.range(of: .day, in: .month, for: currentDate) ?? 1..<31
+        let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: currentDate))!
+        let monthEnd = calendar.date(byAdding: .day, value: monthRange.count, to: monthStart)!
+
+        return logs.filter { log in
+            log.date >= monthStart && log.date < monthEnd
+        }.count
+    }
+
     // --- Get transition animation ---
     private func getTransition() -> AnyTransition {
         return calendarHelper.getTransition(for: animationDirection)
@@ -91,7 +104,6 @@ struct CalendarView: View {
             ZStack {
             // Background
             Color(red: 7/255, green: 7/255, blue: 32/255).ignoresSafeArea()
-            
             VStack {
                 Spacer()
                 Image("Rock")

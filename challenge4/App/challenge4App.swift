@@ -12,6 +12,7 @@ import AVFoundation
 @main
 struct challenge4App: App {
     @State private var backgroundAudioPlayer: AVAudioPlayer?
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -28,7 +29,11 @@ struct challenge4App: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if hasSeenOnboarding {
+                ContentView()
+            } else {
+                OnboardingViewStart()
+            }
         }
         .modelContainer(
             for: [LogObject.self, NeedObject.self, RabitFaceObject.self, FeelingObject.self, Item.self],

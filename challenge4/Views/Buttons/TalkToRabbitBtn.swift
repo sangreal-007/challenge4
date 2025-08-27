@@ -28,55 +28,103 @@ struct TalkToRabbitButtonStyle: ButtonStyle {
 
 struct TalkToRabbitBtn: View {
     @Binding var showHowNVCView : Bool
-    @Environment(\.dismiss) private var dismiss
     @Binding var isClicked: Bool
     
     var body: some View {
-        if (isClicked == false){
+        if isClicked == false {
             Button(action: {
                 showHowNVCView = true
-                isClicked = true
             }) {
                 HStack {
                     Image(systemName: "bubble.fill")
                     Text("Talk Now")
-                }.font(.title3)
-                    .fontDesign(.rounded)
-                    .foregroundColor(.white)
-                    .fontWeight(.heavy)
-                    .padding(20)
-                    .background(
-                        // Only the shape gets filled & shadowed
-                        RoundedRectangle(cornerRadius: 57, style: .continuous)
-                            .fill(Color(.startTalkBtn))
-                            .shadow(color: .startTalkBtnDropShadow.opacity(1), radius: 0, x: 0, y: 8)
-                    )
-                    .frame(maxWidth: 268, maxHeight: 69, alignment: .centerFirstTextBaseline)
+                }
+                .font(.title3)
+                .fontDesign(.rounded)
+                .foregroundColor(.white)
+                .fontWeight(.heavy)
+                .padding(20)
+                .padding(.horizontal,75)
+                .background(
+                    RoundedRectangle(cornerRadius: 57, style: .continuous)
+                        .fill(Color(.startTalkBtn))
+                        .shadow(color: .startTalkBtnDropShadow.opacity(1), radius: 0, x: 0, y: 8)
+                )
+                .frame(maxWidth: 500, maxHeight: 69)
             }
-        } else if (isClicked == true){
-            Button(action: {
-                showHowNVCView = false
-                isClicked = false
-            }) {
+        } else {
+            Button(action: {}) { // Do nothing when already clicked
                 HStack {
                     Image(systemName: "clock.fill")
                     Text("You have talked today...")
-                }.font(.title3)
-                    .fontDesign(.rounded)
-                    .foregroundColor(.white)
-                    .fontWeight(.heavy)
-                    .padding(20)
-                    .background(
-                        // Only the shape gets filled & shadowed
-                        RoundedRectangle(cornerRadius: 57, style: .continuous)
-                            .fill(Color(.doneTalkButton))
-                            .shadow(color: .doneTalkButtonDropShadow.opacity(1), radius: 0, x: 0, y: 8)
-                    )
-                    .frame(maxWidth: 500, maxHeight: 69, alignment: .centerFirstTextBaseline)
+                }
+                .font(.title3)
+                .fontDesign(.rounded)
+                .foregroundColor(.white)
+                .fontWeight(.heavy)
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 57, style: .continuous)
+                        .fill(Color(.doneTalkButton))
+                        .shadow(color: .doneTalkButtonDropShadow.opacity(1), radius: 0, x: 0, y: 8)
+                )
+                .frame(maxWidth: 500, maxHeight: 69)
             }
         }
     }
 }
+//
+//struct TalkToRabbitBtn: View {
+//    @Binding var showHowNVCView : Bool
+//    @Environment(\.dismiss) private var dismiss
+//    @Binding var isClicked: Bool
+//    
+//    var body: some View {
+//        if (isClicked == false){
+//            Button(action: {
+//                showHowNVCView = true
+//                isClicked = true
+//            }) {
+//                HStack {
+//                    Image(systemName: "bubble.fill")
+//                    Text("Talk Now")
+//                }.font(.title3)
+//                    .fontDesign(.rounded)
+//                    .foregroundColor(.white)
+//                    .fontWeight(.heavy)
+//                    .padding(20)
+//                    .background(
+//                        // Only the shape gets filled & shadowed
+//                        RoundedRectangle(cornerRadius: 57, style: .continuous)
+//                            .fill(Color(.startTalkBtn))
+//                            .shadow(color: .startTalkBtnDropShadow.opacity(1), radius: 0, x: 0, y: 8)
+//                    )
+//                    .frame(maxWidth: 268, maxHeight: 69, alignment: .centerFirstTextBaseline)
+//            }
+//        } else if (isClicked == true){
+//            Button(action: {
+//                showHowNVCView = false
+//                isClicked = false
+//            }) {
+//                HStack {
+//                    Image(systemName: "clock.fill")
+//                    Text("You have talked today...")
+//                }.font(.title3)
+//                    .fontDesign(.rounded)
+//                    .foregroundColor(.white)
+//                    .fontWeight(.heavy)
+//                    .padding(20)
+//                    .background(
+//                        // Only the shape gets filled & shadowed
+//                        RoundedRectangle(cornerRadius: 57, style: .continuous)
+//                            .fill(Color(.doneTalkButton))
+//                            .shadow(color: .doneTalkButtonDropShadow.opacity(1), radius: 0, x: 0, y: 8)
+//                    )
+//                    .frame(maxWidth: 500, maxHeight: 69, alignment: .centerFirstTextBaseline)
+//            }
+//        }
+//    }
+//}
 
 #Preview() {
     TalkToRabbitBtn(showHowNVCView: .constant(false), isClicked: .constant(false))

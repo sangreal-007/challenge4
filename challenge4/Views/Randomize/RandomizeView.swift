@@ -2,8 +2,8 @@
 //  StoryView.swift
 //  challenge4
 //
-
 import SwiftUI
+import AVFAudio
 
 struct RandomizeView: View {
     @Binding var observationParent: RabitFaceObject?
@@ -17,8 +17,11 @@ struct RandomizeView: View {
     @Binding var answerGame: FeelingObject?
     
     @Binding var child: Bool
+    @State var gameName: String = ""
     @State var game: String = "game"
     @State private var isNextActive: Bool = false
+    
+    @State private var currentQuestion: Question? = nil   // <-- now stores text + audio
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -26,25 +29,42 @@ struct RandomizeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.background
-                    .ignoresSafeArea()
+                Color.background.ignoresSafeArea()
                 
                 VStack {
-                    VStack (spacing: 20) {
-                        Text("Can you tell me a story\nabout your childhood?")
+                    VStack(spacing: 20) {
+                        Text(currentQuestion?.text ?? "Loading...")
                             .font(Font.custom("SF Pro Rounded", size: 28))
                             .multilineTextAlignment(.center)
                             .foregroundColor(.white)
+
+                        if let audioName = currentQuestion?.audioName {
+                            Button {
+                                AudioPlayer.shared.playAudio(named: audioName)
+                            } label: {
+                                Image(systemName: "speaker.wave.3.fill")
+                                    .font(.title2)
+                                    .foregroundColor(.white)
+                            }
+                        }
                         
                         HStack(spacing: 8) {
-                            Text("Randomize")
+                            Button {
+                                let questions = QuestionLoader.loadQuestions()
+                                if let randomQ = questions.randomElement() {
+                                    currentQuestion = randomQ
+                                    gameName = currentQuestion?.text ?? ""
+                                }
+                            } label: {
+                                HStack {
+                                    Text("Randomize")
+                                    Image(systemName: "dice")
+                                }
                                 .font(Font.custom("SF Pro Rounded", size: 20))
-                                .kerning(0.4)
                                 .foregroundColor(Color(red: 0.46, green: 0.45, blue: 1))
+                            }
                             
-                            Image(systemName: "dice")
-                                .font(.system(size: 20))
-                                .foregroundColor(Color(red: 0.46, green: 0.45, blue: 1))
+                            
                         }
                     }
                     
@@ -55,48 +75,43 @@ struct RandomizeView: View {
                             feelingParent: $feelingParent,
                             feelingChild: $feelingChild,
                             answerGame: $answerGame,
-                            game: $game,
+                            game: $game, gameName: $gameName,
                             child: $child,
                             onNext: {
                                 let logController = LogController(modelContext: modelContext)
-
-                                if observationParent != nil || feelingParent != nil || needsParent != nil {
-                                    logController.addLog(role: .parent,
-                                                         observation: observationParent,
-                                                         feeling: feelingParent,
-                                                         needs: needsParent)
-                                    print("✅ Parent Log saved with obs=\(observationParent != nil), feeling=\(feelingParent != nil), needs=\(needsParent != nil)")
-                                }
-                                
-                                if observationChild != nil || feelingChild != nil || needsChild != nil {
-                                    logController.addLog(role: .child,
-                                                         observation: observationChild,
-                                                         feeling: feelingChild,
-                                                         needs: needsChild)
-                                    print("✅ Child Log saved with obs=\(observationChild != nil), feeling=\(feelingChild != nil), needs=\(needsChild != nil)")
+                                if observationParent != nil || feelingParent != nil || needsParent != nil ||
+                                   observationChild != nil || feelingChild != nil || needsChild != nil ||
+                                   answerGame != nil {
+                                    
+                                    logController.addLog(
+                                        observationParent: observationParent,
+                                        feelingParent: feelingParent,
+                                        needsParent: needsParent,
+                                        observationChild: observationChild,
+                                        feelingChild: feelingChild,
+                                        needsChild: needsChild,
+                                        answerGame: answerGame
+                                    )
                                 }
 
-
-                                if answerGame != nil {
-                                    logController.addLog(role: .game, feeling: answerGame)
-                                    print("🎮 Game Log saved with answer file: \(answerGame?.AudioFilePath ?? "nil")")
-                                }
 
                                 // move to next screen
                                 isNextActive = true
                             }
-
                         )
-                        .offset(x: 0, y: 270)
-
+                        .offset(x: 0, y: 230)
                     }
                 }
             }
+            .onAppear {
+                let questions = QuestionLoader.loadQuestions()
+                if let randomQ = questions.randomElement() {
+                    currentQuestion = randomQ
+                    gameName = currentQuestion?.text ?? ""
+                }
+            }
             .navigationDestination(isPresented: $isNextActive) {
-                // Change into the memory star page
                 MemoryStarView()
-//                LogListPage()
-                
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -109,7 +124,6 @@ struct RandomizeView: View {
         }
     }
 }
-
 #Preview {
     @Previewable @State var observationParent: RabitFaceObject? = RabitFaceObject(name: "Parent Rabbit", image: "RabbitImage")
     @Previewable @State var feelingParent: FeelingObject? = FeelingObject(name:"",AudioFilePath: "parent_feeling.m4a")

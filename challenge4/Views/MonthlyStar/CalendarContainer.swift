@@ -22,12 +22,13 @@ struct CalendarContainer: View {
         VStack(spacing: 0) {
             // Days of week header
             HStack {
-                ForEach(["S","M","T","W","T","F","S"], id: \.self) { day in
-                    Text(day)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(Color(red: 118/255, green: 114/255, blue: 255/255))
-                        .frame(width: 39, height: 20)
+                let weekdays = ["S","M","T","W","T","F","S"] // or Calendar.current.shortWeekdaySymbols
+
+                HStack {
+                    ForEach(Array(weekdays.enumerated()), id: \.offset) { _, day in
+                        Text(day)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
             }
             .padding(.top, 20)

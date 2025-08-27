@@ -16,10 +16,13 @@ enum OnboardingState: String, CaseIterable {
 
 struct OnboardingCards: View {
     @State private var currentState: OnboardingState = .sharefeeling
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
     
+    var onFinish: () -> Void
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea()
+            
             // Card background
             RoundedRectangle(cornerRadius: 36, style: .continuous)
                 .fill(Color.cardBackground)
@@ -30,7 +33,6 @@ struct OnboardingCards: View {
                 .shadow(color: .black.opacity(0.35), radius: 18, y: 8)
                 .frame(width: 344, height: 512)
             
-            // Content based on current state
             VStack(spacing: 0) {
                 // Main content area
                 ZStack {
@@ -58,8 +60,8 @@ struct OnboardingCards: View {
                 if currentState == .allowmic {
                     PermissionButtons(onAllow: {
                         print("Microphone permission granted")
-                        // Handle completion or navigation
-                    }).padding(.bottom, -25)
+                        hasSeenOnboarding = true   // ✅ done here
+                    })
                 } else {
                     NextButton(action: {
                         handleNextButtonTap()
@@ -72,8 +74,6 @@ struct OnboardingCards: View {
     }
     
     private func handleNextButtonTap() {
-        print("NextButton tapped - Current state: \(currentState.rawValue)")
-        
         switch currentState {
         case .sharefeeling:
             currentState = .growcloser
@@ -82,14 +82,12 @@ struct OnboardingCards: View {
         case .bedtimeritual:
             currentState = .allowmic
         case .allowmic:
-            // This case shouldn't be reached since allowmic shows PermissionButtons
-            print("Completed onboarding")
+            // handled separately
+            break
         }
-        
-        print("New state: \(currentState.rawValue)")
     }
 }
 
-#Preview {
-    OnboardingCards()
-}
+//#Preview {
+//    OnboardingCards()
+//}
