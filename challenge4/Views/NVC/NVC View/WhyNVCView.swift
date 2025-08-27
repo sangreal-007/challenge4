@@ -66,7 +66,8 @@ struct WhyNVCView:View {
                         RecordButton(feelingParent: $feelingParent, feelingChild: $feelingChild, answerGame: $answerGame ,game: $empty,gameName: $empty, child: $child, onNext: {
                             isNextActive = true
                         })
-                            .offset(x: 0, y:270)
+                        .padding(.top, 600)
+//                            .offset(x: 0, y:270)
 
                     }
                     
