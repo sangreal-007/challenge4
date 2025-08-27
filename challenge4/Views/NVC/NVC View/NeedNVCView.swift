@@ -35,77 +35,78 @@ struct NeedNVCView: View {
                 Color.background
                     .ignoresSafeArea()
                 VStack {
-                    VStack{
-                        HStack(spacing: 0) {
-                            Text("What do you need? ")
-                                .font(.largeTitle)
-                                .fontDesign(.rounded)
-                                .foregroundColor(.white)
-                            Button {
-                                AudioPlayer.shared.playAudio(named: audioName)
-                            } label: {
-                                Image(systemName: "speaker.wave.3.fill")
-                                    .font(.title2)
+                    
+                    ZStack{
+                        VStack{
+                            HStack(spacing: 0) {
+                                Text("What do you need? ")
+                                    .font(.largeTitle)
+                                    .fontDesign(.rounded)
                                     .foregroundColor(.white)
+                                Button {
+                                    AudioPlayer.shared.playAudio(named: audioName)
+                                } label: {
+                                    Image(systemName: "speaker.wave.3.fill")
+                                        .font(.title2)
+                                        .foregroundColor(.white)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity)
+                            .multilineTextAlignment(.center)
                         }
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
-                    }
-                    NavigationStack {
-                        ZStack {
-                            RabbitsTalkingView()
-                                .offset(x: 0, y: 22)
-                            
-                            NeedCard(
-                                selectedNeeds: $selectedNeeds,
-                                customNeed: $customNeed,
-                                child: $child,
-                                needChild: $needsChild,
-                                needParent: $needsParent,
-                                onNext: {
-                                    selectedNeeds = []
-                                    child = !child
-                                    print("Child value: ")
-                                    print(child)
-                                    // Add 1-second delay to allow button animation and sound to complete
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        isNextActive = true
-                                    }
+                        .offset(x: 0, y:-200)
+                        RabbitsTalkingView()
+                            .offset(x: 0, y:50)
+                        NeedCard(
+                            selectedNeeds: $selectedNeeds,
+                            customNeed: $customNeed,
+                            child: $child,
+                            needChild: $needsChild,
+                            needParent: $needsParent,
+                            onNext: {
+                                selectedNeeds = []
+                                child = !child
+                                print("Child value: ")
+                                print(child)
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    isNextActive = true
                                 }
-                            )
-                            .offset(x: 0, y: 250)
-                        }
+                            }
+                        )
+                        .offset(x: 0, y: 270)
                     }
-                    .navigationDestination(isPresented: $isNextActive) {
-                        if child {
-                            HowNVCView(observationParent: $observationParent, feelingParent: $feelingParent, needsParent: $needsParent, observationChild: $observationChild, feelingChild: $feelingChild, needsChild: $needsChild, answerGame: $answerGame, child: $child)
-                                .transaction { transaction in
-                                    transaction.disablesAnimations = true
-                                }
-                        } else{
-                            RandomizeView(observationParent: $observationParent, feelingParent: $feelingParent, needsParent: $needsParent, observationChild: $observationChild, feelingChild: $feelingChild, needsChild: $needsChild, answerGame: $answerGame, child: $child)
-                                .transaction { transaction in
-                                    transaction.disablesAnimations = true
-                                }
-                        }
-                    }
+                    
                 }
-            }
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        BackButton()
+                .navigationDestination(isPresented: $isNextActive) {
+                    if child {
+                        HowNVCView(observationParent: $observationParent, feelingParent: $feelingParent, needsParent: $needsParent, observationChild: $observationChild, feelingChild: $feelingChild, needsChild: $needsChild, answerGame: $answerGame, child: $child)
+                            .transaction { transaction in
+                                transaction.disablesAnimations = true
+                            }
+                    } else{
+                        RandomizeView(observationParent: $observationParent, feelingParent: $feelingParent, needsParent: $needsParent, observationChild: $observationChild, feelingChild: $feelingChild, needsChild: $needsChild, answerGame: $answerGame, child: $child)
+                            .transaction { transaction in
+                                transaction.disablesAnimations = true
+                            }
                     }
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    BackButton()
+                }
+            }
+        }
     }
-    
-    
 }
+
+
+
 
 #Preview {
     @Previewable @State var observationParent: RabitFaceObject? = RabitFaceObject(name: "Parent Rabbit", image: "RabbitImage")

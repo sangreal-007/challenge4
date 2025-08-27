@@ -27,6 +27,7 @@ struct NeedCard: View {
                     Text("Needs")
                         .font(.title).bold()
                         .foregroundColor(.white)
+                        .padding(.leading, 5)
                     
                     Button(action: {
                         showNeedsPopup = true
